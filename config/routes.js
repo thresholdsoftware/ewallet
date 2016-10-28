@@ -22,7 +22,7 @@
 
 module.exports.routes = {
 
-  /***************************************************************************
+  /* **************************************************************************
   *                                                                          *
   * Make the view located at `views/homepage.ejs` (or `views/homepage.jade`, *
   * etc. depending on your default view engine) your home page.              *
@@ -34,9 +34,22 @@ module.exports.routes = {
 
   '/': {
     view: 'homepage'
-  }
+  },
 
-  /***************************************************************************
+  'get /login': {
+    view: 'login'
+  },
+
+  'post /login': 'AuthController.login',
+
+  '/logout': 'AuthController.logout',
+
+  'get /signup': {
+    view: 'signup'
+  },
+  
+  'get /test': 'TestController.test'
+  /* **************************************************************************
   *                                                                          *
   * Custom routes here...                                                    *
   *                                                                          *

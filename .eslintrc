@@ -1,0 +1,16 @@
+{
+    "extends": "airbnb/base",
+    "rules": {
+      "new-cap": 1,
+      "comma-dangle": 0,
+      "object-curly-spacing": 0
+    },
+    "env": {
+      "node": true,
+      "mocha": true
+    },
+    "globals": {
+      "Logger": true,
+      "User": true
+    }
+}
