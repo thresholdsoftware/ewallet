@@ -36,7 +36,7 @@
     "debug": "node debug app.js",
     "start": "node app.js",
     "test": "echo 'no test'",
-    "lint": "eslint api/*"
+    "lint": "eslint api/**"
   },
   "main": "app.js",
   "repository": {
