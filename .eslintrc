@@ -12,6 +12,6 @@
     },
     "globals": {
       "Logger": true,
-      "User": true
+      "Account": true
     }
 }

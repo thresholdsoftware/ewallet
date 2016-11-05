@@ -7,7 +7,7 @@ const signup = (req, res) => {
 };
 
 const getUser = (req, res) => {
-  return User.findOne({id: req.user.id}).then((u) => {
+  return Account.findOne({id: req.user.id}).populateAll().then((u) => {
     return res.status(200).json(u);
   }, (err) => {
     return res.status(500).json(err);
