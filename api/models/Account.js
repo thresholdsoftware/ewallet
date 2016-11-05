@@ -32,6 +32,9 @@ module.exports = {
     userprofile: {
       model: 'UserProfile'
     },
+    bank: {
+      model: 'Bank'
+    },
     toJSON: function() { //eslint-disable-line
       let obj = this.toObject(); //eslint-disable-line
       delete obj.password;

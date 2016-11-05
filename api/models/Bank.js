@@ -1,25 +1,24 @@
 /**
- * UserProfile.js
+ * Bank.js
  *
- * @description :: UserProdule model for managing user profile
+ * @description :: Bank model for managing user bank details
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 
 module.exports = {
   attributes: {
-    firstName: {
-      type: 'string'
+    bankAccountNo: {
+      type: 'string',
+      required: true
     },
-    lastName: {
-      type: 'string'
+    bank: {
+      type: 'string',
+      required: true
     },
-    account: {
+    ewalletAccount: {
       model: 'Account',
       required: true,
       unique: true
-    },
-    email: {
-      type: 'email'
     }
   }
 };
