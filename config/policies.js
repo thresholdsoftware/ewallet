@@ -20,7 +20,7 @@ module.exports.policies = {
 
   '*': true,
 
-  'TestController': {
+  'AuthController': {
     '*': 'isAuthenticated'
   },
 

@@ -10,7 +10,36 @@ import {setup} from '../services/Logger';
 
 const logger = setup('User');
 
+const removePassword = (obj) => {
+  let tempObj = Object.assign({}, obj); //eslint-disable-line
+  delete tempObj.password;
+  return tempObj;
+};
+
+const hashPassword = (ac, cb) => {
+  const account = ac;
+  return new Promise((resolve, reject) => {
+    bcrypt.genSalt(7, (err, salt) => {
+      bcrypt.hash(account.password, salt, (error, hash) => {
+        if (error) {
+          logger.error(error);
+          reject(error);
+          cb(error);
+        } else {
+          account.password = hash;
+          resolve(account);
+          cb();
+        }
+      });
+    });
+  });
+};
+
 module.exports = {
+  testExports: {
+    removePassword,
+    hashPassword
+  },
   attributes: {
     phone: {
       type: 'string',
@@ -36,22 +65,8 @@ module.exports = {
       model: 'Bank'
     },
     toJSON: function() { //eslint-disable-line
-      let obj = this.toObject(); //eslint-disable-line
-      delete obj.password;
-      return obj;
+      removePassword(this.toObject());
     }
   },
-  beforeCreate: (user, cb) => {
-    bcrypt.genSalt(10, (err, salt) => {
-      bcrypt.hash(user.password, salt, (error, hash) => {
-        if (error) {
-          logger.error(error);
-          cb(error);
-        } else {
-          Object.assign(user, {password: hash});
-          cb();
-        }
-      });
-    });
-  }
+  beforeCreate: (ac, cb) => hashPassword(ac, cb)
 };
