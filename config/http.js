@@ -32,7 +32,6 @@ module.exports.http = {
       'session',
       'passportInit',
       'passportSession',
-      'myRequestLogger',
       'bodyParser',
       'myRequestLogger',
       'handleBodyParserError',
@@ -44,13 +43,12 @@ module.exports.http = {
       'favicon',
       '404',
       '500'
-    ]
-  },
-  myRequestLogger: function(req, res, next) {
-    console.log('T');
-    sails.log.debug("Requested :: ", req.headers.user.id, req.method, req.url);
-    return next();
-  },
+    ],
+    myRequestLogger: function(req, res, next) {
+      sails.log.debug("Requested :: ", req.ip, (req.user && req.user.phone) || 'anonymous', req.method, req.url);
+      return next();
+    }
+  }
   // middleware: {
 
   /* **************************************************************************
