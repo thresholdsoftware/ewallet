@@ -1,11 +1,19 @@
 const signup = (req, res) => {
-  User.create(req.body).then((u) => {
+  Account.create(req.body).then((u) => {
     res.status(200).json(u);
   }, (err) => {
     res.status(500).json(err);
   });
 };
 
+const getUser = (req, res) => {
+  return User.findOne({id: req.user.id}).then((u) => {
+    return res.status(200).json(u);
+  }, (err) => {
+    return res.status(500).json(err);
+  });
+};
 module.exports = {
-  signup
+  signup,
+  getUser
 };
