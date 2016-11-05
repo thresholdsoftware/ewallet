@@ -8,7 +8,7 @@
  * For more information on configuration, check out:
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.http.html
  */
-var passport = require('passport'); 
+var passport = require('passport');
 
 module.exports.http = {
 
@@ -34,6 +34,7 @@ module.exports.http = {
       'passportSession',
       'myRequestLogger',
       'bodyParser',
+      'myRequestLogger',
       'handleBodyParserError',
       'compress',
       'methodOverride',
@@ -44,8 +45,12 @@ module.exports.http = {
       '404',
       '500'
     ]
-  }
-
+  },
+  myRequestLogger: function(req, res, next) {
+    console.log('T');
+    sails.log.debug("Requested :: ", req.headers.user.id, req.method, req.url);
+    return next();
+  },
   // middleware: {
 
   /* **************************************************************************

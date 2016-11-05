@@ -8,13 +8,6 @@
 import passport from 'passport';
 
 module.exports = {
-
-  _config: {
-    actions: false,
-    shortcuts: false,
-    rest: false
-  },
-
   login: (req, res) => {
     passport.authenticate('local', (err, user, info) => {
       if ((err) || (!user)) {

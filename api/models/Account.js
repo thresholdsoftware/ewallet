@@ -12,15 +12,25 @@ const logger = setup('User');
 
 module.exports = {
   attributes: {
-    email: {
-      type: 'email',
-      required: true,
-      unique: true
+    phone: {
+      type: 'string',
+      unique: true,
+      required: true
     },
     password: {
       type: 'string',
       minLength: 6,
       required: true
+    },
+    status: {
+      type: 'string',
+      enum: [
+        'active', 'inactive'
+      ],
+      defaultsTo: 'active'
+    },
+    userprofile: {
+      model: 'UserProfile'
     },
     toJSON: function() { //eslint-disable-line
       let obj = this.toObject(); //eslint-disable-line

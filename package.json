@@ -41,7 +41,8 @@
     "debug": "node debug app.js",
     "start": "node app.js",
     "test": "echo 'no test'",
-    "lint": "eslint api/**"
+    "lint": "eslint api/**",
+    "watch": "nodemon -w api -w config app.js"
   },
   "main": "app.js",
   "repository": {
@@ -55,6 +56,7 @@
     "eslint-config-airbnb": "^12.0.0",
     "eslint-plugin-import": "^2.0.1",
     "mocha": "^3.1.2",
+    "nodemon": "^1.11.0",
     "pre-push": "^0.1.1"
   }
 }
