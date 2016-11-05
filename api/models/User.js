@@ -22,7 +22,7 @@ module.exports = {
       minLength: 6,
       required: true
     },
-    toJSON: () => {
+    toJSON: function() { //eslint-disable-line
       let obj = this.toObject(); //eslint-disable-line
       delete obj.password;
       return obj;
