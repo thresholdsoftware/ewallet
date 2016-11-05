@@ -41,7 +41,7 @@ module.exports.routes = {
 
   'post /signup': 'UserController.signup',
   'get /user': 'UserController.getUser',
-  'post /profile': 'UserController.updateUser',
+  'post /profile': 'UserController.updateUserProfile',
   'post /passwordreset': 'UserController.passwordReset',
   'post /deactivate': 'UserController.deactivateAccount'
 
