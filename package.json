@@ -26,7 +26,8 @@
     "rc": "1.0.1",
     "sails": "~0.12.8",
     "sails-disk": "~0.10.9",
-    "sails-hook-babel": "^6.0.1"
+    "sails-hook-babel": "^6.0.1",
+    "sails-mysql": "^0.11.5"
   },
   "engines": {
     "node": "5.12.0",

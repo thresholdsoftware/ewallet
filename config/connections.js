@@ -18,7 +18,7 @@
  * For more information on configuration, check out:
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.connections.html
  */
-
+const env = process.env.NODE_ENV;
 module.exports.connections = {
 
   /***************************************************************************
@@ -47,6 +47,13 @@ module.exports.connections = {
   //   password: 'YOUR_MYSQL_PASSWORD', //optional
   //   database: 'YOUR_MYSQL_DB' //optional
   // },
+
+  mysqlHerokuConnection: {
+    adapter: 'sails-mysql',
+    url: (env && env.CLEARDB_DATABASE_URL) || '',
+    charset: 'utf8',
+    timezone: 'utc'
+  }
 
   /***************************************************************************
   *                                                                          *
@@ -81,7 +88,6 @@ module.exports.connections = {
   //   password: 'YOUR_POSTGRES_PASSWORD', // optional
   //   database: 'YOUR_POSTGRES_DB' //optional
   // }
-
 
   /***************************************************************************
   *                                                                          *
