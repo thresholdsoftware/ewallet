@@ -15,7 +15,7 @@
  * For more information on configuring policies, check out:
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.policies.html
  */
-
+var authenticated = ['isAuthenticated'];
 module.exports.policies = {
 
   '*': true,
@@ -23,6 +23,13 @@ module.exports.policies = {
   'AuthController': {
     '*': true
   },
+  'UserController': {
+    'signup': true,
+    'getUser': authenticated,
+    'updateUserProfile': authenticated,
+    'passwordReset': authenticated,
+    'deactivateAccount': authenticated
+  }
 
   /***************************************************************************
   *                                                                          *

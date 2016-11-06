@@ -10,7 +10,7 @@ describe('UserController', () => {
     .post('/signup')
     .send({password: 'testpass'})
     .end((err, res) => {
-      expect(res).to.have.status(500);
+      expect(res).to.not.have.status(200);
       done();
     });
   });

@@ -2,12 +2,6 @@
 
 a [Sails](http://sailsjs.org) application
 
-Use NODE version 0.12.17 LTS
-
-use NPM version 2.15.1
-
-Use nvm for node version management.
-(if nvm .. just type nvm use)
 ### Steps:
 
 1. npm install

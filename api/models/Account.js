@@ -65,7 +65,7 @@ module.exports = {
       model: 'Bank'
     },
     toJSON: function toJSON() {
-      var obj = this.toObject();
+      var obj = this.toObject(); //eslint-disable-line
       return removePassword(obj);
     }
   },
