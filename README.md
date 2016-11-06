@@ -2,6 +2,21 @@
 
 a [Sails](http://sailsjs.org) application
 
+Use NODE version 0.12.17 LTS
+
+use NPM version 2.15.1
+
+Use nvm for node version management.
+(if nvm .. just type nvm use)
+### Steps:
+
+1. npm install
+
+2. Start the app in one of the following ways
+
+To start run `npm start`
+
+To start in dev mode with watch : `npm run watch`
 
 The local.js config should be of this type:
 
@@ -18,14 +33,14 @@ The local.js config should be of this type:
  * in the env/ subfolder.
  *
  * PLEASE NOTE:
- *		local.js is included in your .gitignore, so if you're using git
- *		as a version control solution for your Sails app, keep in mind that
- *		this file won't be committed to your repository!
+ *        local.js is included in your .gitignore, so if you're using git
+ *        as a version control solution for your Sails app, keep in mind that
+ *        this file won't be committed to your repository!
  *
- *		Good news is, that means you can specify configuration for your local
- *		machine in this file without inadvertently committing personal information
- *		(like database passwords) to the repo.  Plus, this prevents other members
- *		of your team from commiting their local configuration changes on top of yours.
+ *        Good news is, that means you can specify configuration for your local
+ *        machine in this file without inadvertently committing personal information
+ *        (like database passwords) to the repo.  Plus, this prevents other members
+ *        of your team from commiting their local configuration changes on top of yours.
  *
  *    In a production environment, you probably want to leave this file out
  *    entirely and leave all your settings in env/production.js
@@ -84,7 +99,7 @@ module.exports = {
    * http://en.wikipedia.org/wiki/Port_(computer_networking)                 *
    *                                                                         *
    * By default, if it's set, Sails uses the `PORT` environment variable.    *
-   * Otherwise it falls back to port 1337.                                   *
+   * Otherwise it falls back to port 1337\.                                   *
    *                                                                         *
    * In env/production.js, you'll probably want to change this setting       *
    * to 80 (http://) or 443 (https://) if you have an SSL certificate        *

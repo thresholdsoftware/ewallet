@@ -11,7 +11,7 @@ import {setup} from '../services/Logger';
 const logger = setup('User');
 
 const removePassword = (obj) => {
-  let tempObj = Object.assign({}, obj); //eslint-disable-line
+  let tempObj = obj; //eslint-disable-line
   delete tempObj.password;
   return tempObj;
 };
@@ -64,8 +64,9 @@ module.exports = {
     bank: {
       model: 'Bank'
     },
-    toJSON: function() { //eslint-disable-line
-      removePassword(this.toObject());
+    toJSON: function toJSON() {
+      var obj = this.toObject();
+      return removePassword(obj);
     }
   },
   beforeCreate: (ac, cb) => hashPassword(ac, cb)

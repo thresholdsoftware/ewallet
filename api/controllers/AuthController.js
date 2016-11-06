@@ -11,13 +11,13 @@ module.exports = {
   login: (req, res) => {
     passport.authenticate('local', (err, user, info) => {
       if ((err) || (!user)) {
-        return res.send({message: info.message, user});
+        return res.status(401).json({message: info.message, user});
       }
       return req.logIn(user, (error) => {
         if (error) {
-          res.send(error);
+          res.status(401).json(error);
         }
-        return res.send({message: info.message, user});
+        return res.status(200).json({message: info.message, user});
       });
     })(req, res);
   },
