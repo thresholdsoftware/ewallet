@@ -16,7 +16,10 @@
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.policies.html
  */
 var authenticated = ['isAuthenticated'];
-module.exports.policies = {
+var testPolicy = {
+  '*': true
+};
+var policies = {
 
   '*': true,
 
@@ -61,3 +64,7 @@ module.exports.policies = {
   // feed : ['isNiceToAnimals', 'hasRabbitFood']
   // }
 };
+
+module.exports.policies = (process.env.NODE_ENV === 'test')
+  ? testPolicy
+  : policies;

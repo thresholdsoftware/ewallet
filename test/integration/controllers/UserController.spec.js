@@ -1,25 +1,24 @@
 import chai from 'chai'; //eslint-disable-line
 import chaiHttp from 'chai-http'; //eslint-disable-line
+import Api from '../../../api/services/Api';
 
 chai.use(chaiHttp);
 const {expect} = chai;
 
-describe('UserController', () => {
+describe('UserController signup', () => {
   it('failes to create user if not sufficient details', (done) => {
-    chai.request('http://localhost:1337')
-    .post('/signup')
-    .send({password: 'testpass'})
-    .end((err, res) => {
-      expect(res).to.not.have.status(200);
+    return Api.post('http://localhost:1337/signup', {password: 'testpass'}).then(() => {}).catch((err) => {
+      expect(err.status).to.not.equal(200);
       done();
     });
   });
+
   it('creates the user successfully', (done) => {
-    chai.request('http://localhost:1337')
-    .post('/signup')
-    .send({phone: '9876543210', password: 'testpass'})
-    .end((err, res) => {
-      expect(res).to.have.status(200);
+    Api.post('http://localhost:1337/signup', {
+      phone: '9999999',
+      password: '9999999'
+    }).then((res) => {
+      expect(res.status).to.equal(200);
       done();
     });
   });
