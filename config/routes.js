@@ -50,7 +50,11 @@ module.exports.routes = {
   'get /user': 'UserController.getUser',
   'post /profile': 'UserController.updateUserProfile',
   'post /passwordreset': 'UserController.passwordReset',
-  'post /deactivate': 'UserController.deactivateAccount'
+  'post /deactivate': 'UserController.deactivateAccount',
+
+  'get /test': 'TestController.getTest',
+  'post /test': 'TestController.postTest',
+  'get /err': 'TestController.errTest'
 
   /* **************************************************************************
   *                                                                          *
