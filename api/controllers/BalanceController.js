@@ -13,22 +13,6 @@ const getBalance = (req, res) => {
 
 
 
-const createInitialBalanceRecord = (req, res) => {
-	const body={
-		"phone" :req.user.phone,
-		"balance":0
-	}
-
-	return Balance.create(body).then((u) => {
-
-		res.status(200).json(u);
-	}, (err) => {
-		
-		res.status(400).json(err);
-	});
-};
-
-
 module.exports= {
 	getBalance,
 	createInitialBalanceRecord

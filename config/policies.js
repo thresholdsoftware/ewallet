@@ -36,7 +36,6 @@ var policies = {
 
   'BalanceController':{
     'getBalance':authenticated,
-    'createInitialBalanceRecord':authenticated
   }
 
   /***************************************************************************
