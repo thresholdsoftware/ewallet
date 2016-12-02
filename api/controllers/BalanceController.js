@@ -1,7 +1,6 @@
 const getBalance = (req, res) => {
-	console.log(req.user)
-  const phone = req.user.phone
-  return Balance.findOne({phone: phone}).populateAll().then((u) => {
+  const phone = req.user.phone;
+  return Balance.findOne({phone}).populateAll().then((u) => {
     if (!u) {
       return res.status(404).json({message: 'record not found'});
     }
@@ -11,10 +10,6 @@ const getBalance = (req, res) => {
   });
 };
 
-
-
-module.exports= {
-	getBalance
-}
-
-
+module.exports = {
+  getBalance
+};

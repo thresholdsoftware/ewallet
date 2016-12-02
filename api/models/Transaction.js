@@ -8,20 +8,20 @@ module.exports = {
       type: 'integer',
       required: true
     },
-    transaction_type:{
-      type:'string',
-       enum: [
+    transaction_type: {
+      type: 'string',
+      enum: [
         'CREDIT', 'WALLET'
       ],
-      required:true
+      required: true
     },
-    amount:{
-      type:'integer',
-      required:true
+    amount: {
+      type: 'integer',
+      required: true
     },
-    scratch_card_id:{
-      type:'string',
-      required:false
+    scratch_card_id: {
+      type: 'string',
+      required: false
     }
   }
 };

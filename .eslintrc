@@ -13,6 +13,9 @@
     "globals": {
       "Logger": true,
       "Account": true,
-      "UserProfile": true
+      "UserProfile": true,
+      "Balance": true,
+      "Transaction": true,
+      "ScratchCard": true
     }
 }
