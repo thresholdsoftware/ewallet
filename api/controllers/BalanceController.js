@@ -14,8 +14,7 @@ const getBalance = (req, res) => {
 
 
 module.exports= {
-	getBalance,
-	createInitialBalanceRecord
+	getBalance
 }
 
 

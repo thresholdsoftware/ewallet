@@ -4,12 +4,14 @@ module.exports = {
     
     balance:{
       type:'integer',
-      required:true
+      required:true,
+      size:64
     },
     phone:{
       type:'integer',
       required:true,
-      unique:true
+      unique:true,
+      size:64
     }
   }
 };
