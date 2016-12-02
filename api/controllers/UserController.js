@@ -1,14 +1,29 @@
 import _ from 'lodash';
 
+const createUserProfile = (udetails) => {
+  return UserProfile.create(udetails).then((up) => {
+    return Account.update({
+      id: up.account
+    }, {userprofile: up.id}).then(() => up);
+  });
+};
+
 const signup = (req, res) => {
-  return Account.create(req.body).then((u) => {
-    Balance.create({phone: req.body.phone, balance: 0}).then(() => {
-      res.status(200).json(u);
-    }, (err) => {
-      res.status(400).json(err);
+  const {phone, password, name, email} = req.body;
+  return Account.create({phone, password}).then((acc) => {
+    return createUserProfile({name, email, account: acc.id});
+  }).then((uprofile) => {
+    return Balance.create({account: uprofile.account, balance: 0}).then((b) => {
+      return Account.update({
+        id: uprofile.account
+      }, {balance: b.id});
     });
-  }, (err) => {
-    res.status(400).json(err);
+  }).then((acc) => {
+    return Account.find({id: acc[0].id}).populateAll();
+  }).then((account) => {
+    return res.status(200).json(account);
+  }).catch((err) => {
+    return res.status(400).json(err);
   });
 };
 
@@ -19,16 +34,8 @@ const getUser = (req, res) => {
       return res.status(404).json({message: 'user not present'});
     }
     return res.status(200).json(u);
-  }, (err) => {
+  }).catch((err) => {
     return res.status(500).json(err);
-  });
-};
-
-const createUserProfile = (userId, ud) => {
-  return UserProfile.create(ud).then((up) => {
-    return Account.update({
-      id: userId
-    }, {userprofile: up.id}).then(() => up);
   });
 };
 
@@ -40,11 +47,11 @@ const updateUserProfile = (req, res) => {
   }, userDetails).then((u) => {
     const up = u[0];
     if (!up) {
-      return createUserProfile(userId, userDetails).then((us) => {
-        res.status(200).json(us);
-      });
+      return createUserProfile(userId, userDetails);
     }
-    return res.status(200).json(up);
+    return up;
+  }).then((up) => {
+    res.status(200).json(up);
   }).catch((err) => {
     return res.status(500).json(err);
   });
@@ -55,7 +62,7 @@ const passwordReset = (req, res) => {
     id: req.user.id
   }, req.body.newPassword).then((u) => {
     return res.status(200).json(u);
-  }, (err) => {
+  }).catch((err) => {
     return res.status(500).json(err);
   });
 };
@@ -65,7 +72,7 @@ const deactivateAccount = (req, res) => {
     id: req.user.id
   }, {status: 'inactive'}).then((u) => {
     return res.status(200).json(u);
-  }, (err) => {
+  }).catch((err) => {
     return res.status(500).json(err);
   });
 };

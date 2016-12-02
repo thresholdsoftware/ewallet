@@ -58,8 +58,13 @@ module.exports = {
       ],
       defaultsTo: 'active'
     },
+    balance: {
+      model: 'Balance',
+      unique: true
+    },
     userprofile: {
-      model: 'UserProfile'
+      model: 'UserProfile',
+      unique: true
     },
     bank: {
       model: 'Bank'

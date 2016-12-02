@@ -3,13 +3,11 @@ module.exports = {
     balance: {
       type: 'integer',
       required: true,
+      defaultsTo: 0,
       size: 64
     },
-    phone: {
-      type: 'integer',
-      required: true,
-      unique: true,
-      size: 64
+    account: {
+      model: 'Account'
     }
   }
 };

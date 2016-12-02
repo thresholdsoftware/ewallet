@@ -4,7 +4,8 @@
       "new-cap": 1,
       "comma-dangle": 0,
       "object-curly-spacing": 0,
-      "arrow-body-style": 0
+      "arrow-body-style": 0,
+      "newline-per-chained-call": 0
     },
     "env": {
       "node": true,

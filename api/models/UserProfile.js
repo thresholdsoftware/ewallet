@@ -7,10 +7,7 @@
 
 module.exports = {
   attributes: {
-    firstName: {
-      type: 'string'
-    },
-    lastName: {
+    name: {
       type: 'string'
     },
     account: {
