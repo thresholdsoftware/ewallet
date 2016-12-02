@@ -54,7 +54,9 @@ module.exports.routes = {
 
   'get /test': 'TestController.getTest',
   'post /test': 'TestController.postTest',
-  'get /err': 'TestController.errTest'
+  'get /err': 'TestController.errTest',
+
+  'post /generate-scratch-card': 'ScratchCard.generateScratchCard'
 
   /* **************************************************************************
   *                                                                          *
