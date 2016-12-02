@@ -2,11 +2,19 @@ import _ from 'lodash';
 
 const signup = (req, res) => {
   return Account.create(req.body).then((u) => {
-    res.status(200).json(u);
+    Balance.create({"phone":req.body.phone,"balance":0}).then((bal)=>{
+      res.status(200).json(u);
+    }, (err) => {
+
+      res.status(400).json(err);
+    });
+
   }, (err) => {
     res.status(400).json(err);
   });
 };
+
+
 
 const getUser = (req, res) => {
   const userId = req.user.id;

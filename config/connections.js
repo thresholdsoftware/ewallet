@@ -48,12 +48,12 @@ module.exports.connections = {
   //   database: 'YOUR_MYSQL_DB' //optional
   // },
 
-  mysqlHerokuConnection: {
+  /*mysqlHerokuConnection: {
     adapter: 'sails-mysql',
     url: (env && env.CLEARDB_DATABASE_URL) || '',
     charset: 'utf8',
     timezone: 'utc'
-  }
+  }*/
 
   /***************************************************************************
   *                                                                          *

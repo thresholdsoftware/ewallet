@@ -32,6 +32,10 @@ var policies = {
     'updateUserProfile': authenticated,
     'passwordReset': authenticated,
     'deactivateAccount': authenticated
+  },
+
+  'BalanceController':{
+    'getBalance':authenticated,
   }
 
   /***************************************************************************
