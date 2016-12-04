@@ -1,11 +1,11 @@
 module.exports = {
   attributes: {
-    from_phone: {
-      type: 'integer',
+    from_account: {
+      model: 'Account',
       required: false
     },
-    to_phone: {
-      type: 'integer',
+    to_account: {
+      model: 'Account',
       required: true
     },
     transaction_type: {

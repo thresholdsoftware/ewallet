@@ -58,7 +58,7 @@ module.exports = {
       ],
       defaultsTo: 'active'
     },
-    balance: {
+    balanceAccount: {
       model: 'Balance',
       unique: true
     },
