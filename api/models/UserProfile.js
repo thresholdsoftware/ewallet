@@ -18,5 +18,13 @@ module.exports = {
     email: {
       type: 'email'
     }
+  },
+  afterCreate: (values, cb) => {
+    const accountId = values.account;
+    Account.update({
+      id: accountId
+    }, {userprofile: values.id}).then(() => {
+      cb();
+    }, err => cb(err));
   }
 };

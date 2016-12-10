@@ -17,6 +17,7 @@
       "UserProfile": true,
       "Balance": true,
       "Transaction": true,
-      "ScratchCard": true
+      "ScratchCard": true,
+      "Bank": true
     }
 }

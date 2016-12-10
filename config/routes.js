@@ -49,6 +49,7 @@ module.exports.routes = {
   'post /signup': 'UserController.signup',
   'get /user': 'UserController.getUser',
   'get /balance': 'BalanceController.getBalance',
+  'post /bank-details': 'UserController.updateBankDetails',
   'get /transactions': 'TransactionController.getTransactions',
   'post /profile': 'UserController.updateUserProfile',
   'post /passwordreset': 'UserController.passwordReset',

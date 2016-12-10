@@ -30,7 +30,8 @@ var policies = {
     'getUser': ['isAuthenticated'],
     'updateUserProfile': ['isAuthenticated'],
     'passwordReset': ['isAuthenticated'],
-    'deactivateAccount': ['isAuthenticated']
+    'deactivateAccount': ['isAuthenticated'],
+    'updateBankDetails': ['isAuthenticated']
   },
 
   'BalanceController': {
