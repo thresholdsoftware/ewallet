@@ -2,7 +2,7 @@ module.exports = {
   attributes: {
     from_account: {
       model: 'Account',
-      required: false
+      required: true
     },
     to_account: {
       model: 'Account',
@@ -19,9 +19,9 @@ module.exports = {
       type: 'integer',
       required: true
     },
-    scratch_card_id: {
+    metadata: {
       type: 'string',
-      required: false
+      required: true
     }
   }
 };

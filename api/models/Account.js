@@ -69,6 +69,14 @@ module.exports = {
     bank: {
       model: 'Bank'
     },
+    fromTransactions: {
+      collection: 'Transaction',
+      via: 'from_account'
+    },
+    toTransactions: {
+      collection: 'Transaction',
+      via: 'to_account'
+    },
     toJSON: function toJSON() {
       var obj = this.toObject(); //eslint-disable-line
       return removePassword(obj);

@@ -11,34 +11,30 @@
 
 module.exports.bootstrap = function(cb) {
 
-	Balance.query(`
+  Balance.query(`
+		CREATE TRIGGER update_bal123 after INSERT ON transaction
+		 FOR EACH ROW
+		 BEGIN
+				 IF new.transaction_type="CREDIT" AND NEW.from_account != 0 THEN
+						signal sqlstate '45001' set message_text = "from account cannot be specified in the credit type transaction";
+				 END IF;
 
-CREATE TRIGGER update_bal123 after INSERT ON transaction
+				 IF new.transaction_type="WALLET" AND NEW.from_account is  NULL THEN
+						signal sqlstate '45001' set message_text = "from account attribute has to be specified in the wallet transaction";
+				 END IF;
 
-     FOR EACH ROW
-    BEGIN
-         IF new.transaction_type=\"CREDIT\" AND NEW.from_account is not NULL THEN
-         		signal sqlstate '45001' set message_text = \"from account cannot be specified in the credit type transaction\";
-         END IF;
+				 IF (select balance from balance where account=NEW.from_account)<NEW.amount AND NEW.transaction_type="WALLET" THEN
+						signal sqlstate '45002' set message_text = "Insufficient Balance";
+				 END IF;
+				 update balance set balance = IFNULL(((select SUM(amount) from ewallet.transaction where to_account=NEW.to_account)-IFNULL((select SUM(amount) from ewallet.transaction where from_account=NEW.to_account ),0)),NEW.amount) where account = NEW.to_account;
 
-         IF new.transaction_type=\"WALLET\" AND NEW.from_account is  NULL THEN
-         		signal sqlstate '45001' set message_text = \"from account attribute has to be specified in the wallet transaction\";
-         END IF;
-
-         IF (select balance from balance where account=NEW.from_account)<NEW.amount AND NEW.transaction_type=\"WALLET\" THEN
-         		signal sqlstate '45002' set message_text = \"Insufficient Balance\";
-         END IF;
-         update balance set balance = IFNULL(((select SUM(amount) from ewallet.transaction where to_account=NEW.to_account)-IFNULL((select SUM(amount) from ewallet.transaction where from_account=NEW.to_account ),0)),NEW.amount) where account = NEW.to_account;
-
-         update balance set balance = IFNULL(((select SUM(amount) from ewallet.transaction where to_account=NEW.from_account)-IFNULL((select SUM(amount) from ewallet.transaction where from_account=NEW.from_account),0)),0) where account = NEW.from_account;
-     END;
-
-
-`,function (err, records){
-	if(err){
-		console.log(err)
-	}
-});
+				 update balance set balance = IFNULL(((select SUM(amount) from ewallet.transaction where to_account=NEW.from_account)-IFNULL((select SUM(amount) from ewallet.transaction where from_account=NEW.from_account),0)),0) where account = NEW.from_account;
+		 END;
+`, function(err, records) {
+    if (err) {
+      console.log(err)
+    }
+  });
 
   // It's very important to trigger this callback method when you are finished
   // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)

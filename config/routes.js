@@ -54,6 +54,8 @@ module.exports.routes = {
   'post /passwordreset': 'UserController.passwordReset',
   'post /deactivate': 'UserController.deactivateAccount',
   'post /transact' : 'TransactionController.transact',
+  'post /test-credit' : 'TransactionController.testCreditTransaction',
+
 
   'get /test': 'TestController.getTest',
   'post /test': 'TestController.postTest',
