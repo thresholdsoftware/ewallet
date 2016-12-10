@@ -24,7 +24,9 @@ const signup = (req, res) => {
 
 const getUser = (req, res) => {
   const userId = req.user.id;
-  return Account.findOne({id: userId}).populateAll().then((u) => {
+  return Account.findOne({id: userId})
+  .populate('userprofile').populate('balanceAccount').populate('bank')
+  .then((u) => {
     if (!u) {
       return res.status(404).json({message: 'user not present'});
     }
