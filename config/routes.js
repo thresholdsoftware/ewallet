@@ -48,20 +48,21 @@ module.exports.routes = {
 
   'post /signup': 'UserController.signup',
   'get /user': 'UserController.getUser',
-  'get /balance':  'BalanceController.getBalance',
-  'get /transactions':  'TransactionController.getTransactions',
+  'get /balance': 'BalanceController.getBalance',
+  'get /transactions': 'TransactionController.getTransactions',
   'post /profile': 'UserController.updateUserProfile',
   'post /passwordreset': 'UserController.passwordReset',
   'post /deactivate': 'UserController.deactivateAccount',
-  'post /transact' : 'TransactionController.transact',
-  'post /test-credit' : 'TransactionController.testCreditTransaction',
-
+  'post /transact': 'TransactionController.transact',
+  'post /test-credit': 'TransactionController.testCreditTransaction',
 
   'get /test': 'TestController.getTest',
   'post /test': 'TestController.postTest',
   'get /err': 'TestController.errTest',
 
-  'post /generate-scratch-card': 'ScratchCard.generateScratchCard'
+  'post /generate-scratch-card': 'ScratchCardController.generateScratchCard',
+  'post /use-scratchcard': 'ScratchCardController.useScratchCard',
+  'post /activate-scratch-card-group': 'ScratchCardController.activateScratchCardGroup'
 
   /* **************************************************************************
   *                                                                          *

@@ -15,7 +15,6 @@
  * For more information on configuring policies, check out:
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.policies.html
  */
-var authenticated = ['isAuthenticated'];
 var testPolicy = {
   '*': true
 };
@@ -28,16 +27,18 @@ var policies = {
   },
   'UserController': {
     'signup': true,
-    'getUser': authenticated,
-    'updateUserProfile': authenticated,
-    'passwordReset': authenticated,
-    'deactivateAccount': authenticated
+    'getUser': ['isAuthenticated'],
+    'updateUserProfile': ['isAuthenticated'],
+    'passwordReset': ['isAuthenticated'],
+    'deactivateAccount': ['isAuthenticated']
   },
 
-  'BalanceController':{
-    'getBalance':authenticated,
+  'BalanceController': {
+    'getBalance': ['isAuthenticated']
+  },
+  'ScratchCardController': {
+    'useScratchCard': ['isAuthenticated']
   }
-
   /***************************************************************************
   *                                                                          *
   * Default policy for all controllers and actions (`true` allows public     *

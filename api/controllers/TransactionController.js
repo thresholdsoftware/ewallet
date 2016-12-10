@@ -1,13 +1,16 @@
 const transact = (req, res) => {
-  const t = {
-    from_account: req.user.id,
-    to_account: req.body.to_account,
-    transaction_type: 'WALLET',
-    amount: req.body.amount,
-    metadata: `Transfer from ${req.user.id} to ${req.body.to_account}` //eslint-disable-line
-  };
-  return Transaction.create(t).then((u) => {
-    res.status(200).json(u);
+  const toPhone = req.body.to_phone;
+  const amount = parseFloat(req.body.amount);
+  return Account.findOne({phone: toPhone}).then((toAcc) => {
+    if (!toAcc) {
+      throw new Error('Destination Account doesnt exist!');
+    }
+    if (!amount || amount === 0) {
+      throw new Error('Invalid amount !');
+    }
+    return Transaction.create({from_account: req.user.id, to_account: toAcc.id, transaction_type: 'WALLET', amount, metadata: `Transfer from ${req.user.id} to ${toAcc.id}`});
+  }).then((t) => {
+    res.status(200).json(t);
   }, (err) => {
     res.status(400).json({
       err: err.message || err
