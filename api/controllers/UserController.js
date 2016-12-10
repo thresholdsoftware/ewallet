@@ -4,18 +4,9 @@ const signup = (req, res) => {
   const {phone, password, name, email} = req.body;
   return Account.create({phone, password})
   .then(acc => UserProfile.create({name, email, account: acc.id}))
-  .then((uprofile) => {
-    return Balance.create({account: uprofile.account, balance: 0}).then((b) => {
-      return Account.update({
-        id: uprofile.account
-      }, {
-        balanceAccount: b.id,
-        userprofile: uprofile.id
-      });
-    });
-  }).then((acc) => {
-    return Account.find({id: acc[0].id}).populateAll();
-  }).then((account) => {
+  .then(uprofile => Balance.create({account: uprofile.account, balance: 0}))
+  .then(balance => Account.findOne({id: balance.account}).populateAll())
+  .then((account) => {
     return res.status(200).json(account);
   }).catch((err) => {
     return res.status(400).json(err);
@@ -24,9 +15,7 @@ const signup = (req, res) => {
 
 const getUser = (req, res) => {
   const userId = req.user.id;
-  return Account.findOne({id: userId})
-  .populate('userprofile').populate('balanceAccount').populate('bank')
-  .then((u) => {
+  return Account.findOne({id: userId}).populate('userprofile').populate('balanceAccount').populate('bank').then((u) => {
     if (!u) {
       return res.status(404).json({message: 'user not present'});
     }
@@ -54,6 +43,22 @@ const updateUserProfile = (req, res) => {
   });
 };
 
+const updateBankDetails = (req, res) => {
+  const accountId = req.user.id;
+  const accDetails = Object.assign({}, req.body, {
+    ewalletAccount: accountId,
+    status: 'pending'
+  });
+  return Bank.update({
+    ewalletAccount: accountId
+  }, accDetails).then((b) => {
+    if (!b || b.length === 0) {
+      return Bank.create(accDetails);
+    }
+    return b;
+  }).then(b => res.status(200).json(b)).catch(err => res.status(500).json(err));
+};
+
 const passwordReset = (req, res) => {
   return Account.update({
     id: req.user.id
@@ -79,5 +84,6 @@ module.exports = {
   getUser,
   updateUserProfile,
   passwordReset,
-  deactivateAccount
+  deactivateAccount,
+  updateBankDetails
 };

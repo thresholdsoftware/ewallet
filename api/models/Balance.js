@@ -9,5 +9,13 @@ module.exports = {
     account: {
       model: 'Account'
     }
+  },
+  afterCreate: (values, cb) => {
+    const accountId = values.account;
+    Account.update({
+      id: accountId
+    }, {balanceAccount: values.id}).then(() => {
+      cb();
+    }, err => cb(err));
   }
 };

@@ -4,7 +4,7 @@
  * @description :: User model for managing user profile
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 import {setup} from '../services/Logger';
 
