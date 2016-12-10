@@ -1,22 +1,17 @@
 import _ from 'lodash';
 
-const createUserProfile = (udetails) => {
-  return UserProfile.create(udetails).then((up) => {
-    return Account.update({
-      id: up.account
-    }, {userprofile: up.id}).then(() => up);
-  });
-};
-
 const signup = (req, res) => {
   const {phone, password, name, email} = req.body;
-  return Account.create({phone, password}).then((acc) => {
-    return createUserProfile({name, email, account: acc.id});
-  }).then((uprofile) => {
+  return Account.create({phone, password})
+  .then(acc => UserProfile.create({name, email, account: acc.id}))
+  .then((uprofile) => {
     return Balance.create({account: uprofile.account, balance: 0}).then((b) => {
       return Account.update({
         id: uprofile.account
-      }, {balance: b.id});
+      }, {
+        balanceAccount: b.id,
+        userprofile: uprofile.id
+      });
     });
   }).then((acc) => {
     return Account.find({id: acc[0].id}).populateAll();
