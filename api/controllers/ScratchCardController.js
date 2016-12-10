@@ -22,13 +22,13 @@ const useScratchCard = (req, res) => {
 
   return ScratchCard.update({
     scratchId: scID,
-    amount: scAmount,
+    
     status: 'active'
   }, {status: 'used'}).then((sc) => {
     if (!sc || sc.length === 0) {
       throw new Error('Invalid or Inactive ScratchCard');
     }
-    return Transaction.create({from_account: 0, to_account: toAccount, transaction_type: 'CREDIT', amount: scAmount, metadata: `CREDITED ${sc[0].amount} to acc:${req.user.id} phone:${req.user.phone} via scratch card ${sc[0].scratchId}`});
+    return Transaction.create({from_account: 0, to_account: toAccount, transaction_type: 'CREDIT', amount: sc[0].amount, metadata: `CREDITED ${sc[0].amount} to acc:${req.user.id} phone:${req.user.phone} via scratch card ${sc[0].scratchId}`});
   }).then((t) => {
     res.status(200).json(t);
   }).catch((err) => {
