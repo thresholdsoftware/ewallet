@@ -11,6 +11,12 @@ module.exports = {
       type: 'string',
       required: true
     },
+    scratchId: {
+      type: 'string',
+      minLength: 16,
+      required: true,
+      unique: true
+    },
     status: {
       enum: [
         'active', 'used', 'inactive'
