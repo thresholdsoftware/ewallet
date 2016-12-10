@@ -42,7 +42,7 @@ const updateUserProfile = (req, res) => {
   }, userDetails).then((u) => {
     const up = u[0];
     if (!up) {
-      return createUserProfile(userId, userDetails);
+      return UserProfile.create(Object.assign({}, userDetails, {account: userId}));
     }
     return up;
   }).then((up) => {
