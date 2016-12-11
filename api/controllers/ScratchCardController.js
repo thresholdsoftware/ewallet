@@ -17,12 +17,10 @@ const generateScratchCard = (req, res) => {
 
 const useScratchCard = (req, res) => {
   const scID = req.body.scratch_card_id;
-  const scAmount = parseFloat(req.body.scratch_card_amount) || 0;
   const toAccount = req.user.id;
 
   return ScratchCard.update({
     scratchId: scID,
-    
     status: 'active'
   }, {status: 'used'}).then((sc) => {
     if (!sc || sc.length === 0) {
