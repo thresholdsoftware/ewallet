@@ -10,7 +10,6 @@
  */
 
 module.exports.bootstrap = function(cb) {
-
   Balance.query(`
 		CREATE TRIGGER update_bal123 after INSERT ON transaction
 		 FOR EACH ROW

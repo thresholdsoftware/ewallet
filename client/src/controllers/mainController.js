@@ -1,0 +1,10 @@
+function mainController($scope, $http, api) {
+  const scope = $scope;
+  scope.message = 'This is a test screen';
+  scope.user = {};
+  api.get('/user').then((d) => {
+    scope.user = d.data;
+  }).catch((err) => console.log(err));
+}
+
+module.exports = ['$scope', '$http', 'api', mainController];
