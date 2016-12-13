@@ -18,26 +18,15 @@ passport.use(new LocalStrategy({
   usernameField: 'phone',
   passwordField: 'password'
 }, function(phone, password, done) {
-
-  Account.findOne({
-    phone: phone
-  }, function(err, user) {
-    if (err) {
-      return done(err);
-    }
+  Account.findOne({phone: phone}).populate('userprofile').populate('balanceAccount').populate('bank').then(function(user) {
     if (!user) {
       return done(null, false, {message: 'Incorrect phone.'});
     }
-
     bcrypt.compare(password, user.password, function(err, res) {
-      if (!res)
+      if (!res) {
         return done(null, false, {message: 'Invalid Password'});
-      var returnUser = {
-        phone: user.phone,
-        createdAt: user.createdAt,
-        id: user.id
-      };
-      return done(null, returnUser, {message: 'Logged In Successfully'});
+      }
+      return done(null, user, {message: 'Logged In Successfully'});
     });
-  });
+  }).catch(err => done(err));
 }));
