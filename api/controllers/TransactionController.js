@@ -1,17 +1,25 @@
 const transact = (req, res) => {
   const toPhone = req.body.to_phone;
   const amount = parseFloat(req.body.amount);
-  return Account.findOne({phone: toPhone}).then((toAcc) => {
+  var fromName='';
+  UserProfile.findOne({id:req.user.userprofile}).then((fromProf) =>{
+        fromName=fromProf;
+    });
+  return Account.findOne({phone: toPhone}).populate('userprofile').then((toAcc) => {
     if (!toAcc) {
       throw new Error('Destination Account doesnt exist!');
     }
     if (!amount || amount === 0) {
       throw new Error('Invalid amount !');
     }
-    return Transaction.create({from_account: req.user.id, to_account: toAcc.id, transaction_type: 'WALLET', amount, metadata: `Transfer from ${req.user.id} to ${toAcc.id}`});
+      
+    
+    
+    return Transaction.create({from_account: req.user.id, to_account: toAcc.id, transaction_type: 'WALLET', amount, metadata: `{"from_name": \"${fromName.name}\" ,  "to_name": \"${toAcc.userprofile.name}\"}`});
   }).then((t) => {
     res.status(200).json(t);
   }, (err) => {
+    console.log(err);
     res.status(400).json({
       err: err.message || err
     });
@@ -24,7 +32,7 @@ const testCreditTransaction = (req, res) => {
     to_account: req.user.id,
     transaction_type: 'CREDIT',
     amount: req.body.amount,
-    metadata: `CREDITED ${req.body.amount} to ${req.user.id} via Bank Account`
+    metadata: `CREDITED ${req.body.amount} via Bank Account`
   };
   return Transaction.create(t).then((u) => {
     res.status(200).json(u);
