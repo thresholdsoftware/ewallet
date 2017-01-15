@@ -62,7 +62,8 @@ const getTransactions = (req, res) => {
         '>=': fromDate,
         '<=': toDate
       }
-    }
+    },
+    sort: 'createdAt DESC'
   }).populate('from_account').populate('to_account').then(u => res.status(200).json(u)).catch(err => res.status(500).json(err));
 };
 
