@@ -32,7 +32,7 @@ const testCreditTransaction = (req, res) => {
     to_account: req.user.id,
     transaction_type: 'CREDIT',
     amount: req.body.amount,
-    metadata: `CREDITED ${req.body.amount} via Bank Account`
+    metadata: `From Bank Account`
   };
   return Transaction.create(t).then((u) => {
     res.status(200).json(u);
