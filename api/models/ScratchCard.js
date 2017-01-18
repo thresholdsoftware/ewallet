@@ -13,7 +13,7 @@ module.exports = {
     },
     scratchId: {
       type: 'string',
-      minLength: 16,
+      minLength: 11,
       required: true,
       unique: true
     },

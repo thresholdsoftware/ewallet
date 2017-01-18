@@ -7,7 +7,7 @@ const generateScratchCard = (req, res) => {
   const count = parseInt(req.body.count, 10);
   const generationId = uuid.v4();
   const scratchcards = _.map(_.range(0, count), () => {
-    const scratchId = crypto.createHash('md5').update(uuid.v4()).digest('hex').slice(0, 16);
+    const scratchId =Math.floor(Math.random() * 1000000000000);
     return {amount, generationId, scratchId};
   });
   return ScratchCard.create(scratchcards).then((sc) => {
