@@ -9,11 +9,12 @@ module.exports = {
   attributes: {
     bankAccountNo: {
       type: 'string',
-      required: true
+      required: true,
+      unique:true
     },
     bank: {
       type: 'string',
-      required: true
+      required: true,
     },
     status: {
       type: 'string',
@@ -24,8 +25,7 @@ module.exports = {
     },
     ewalletAccount: {
       model: 'Account',
-      required: true,
-      unique: true
+      required: true
     }
   },
   afterCreate: (values, cb) => {

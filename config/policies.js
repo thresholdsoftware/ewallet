@@ -39,6 +39,9 @@ var policies = {
   },
   'ScratchCardController': {
     'useScratchCard': ['isAuthenticated']
+  },
+  'TransactionController' : {
+    '*' : ['isAuthenticated']
   }
   /***************************************************************************
   *                                                                          *
