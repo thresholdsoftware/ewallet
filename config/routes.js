@@ -63,7 +63,11 @@ module.exports.routes = {
 
   'post /generate-scratch-card': 'ScratchCardController.generateScratchCard',
   'post /use-scratchcard': 'ScratchCardController.useScratchCard',
-  'post /activate-scratch-card-group': 'ScratchCardController.activateScratchCardGroup'
+  'post /activate-scratch-card-group': 'ScratchCardController.activateScratchCardGroup',
+  '/transaction': { policy: 'isAuthenticated' },
+  '/ScratchCard': { policy: 'isAuthenticated' },
+  '/Bank': { policy: 'isAuthenticated' }
+
 
   /* **************************************************************************
   *                                                                          *
