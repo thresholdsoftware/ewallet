@@ -7,6 +7,7 @@ import {syncHistoryWithStore, routerReducer} from 'react-router-redux';
 
 import Home from './pages/Home/Home';
 import Charts from './pages/Charts/Charts';
+import PieCharts from './pages/Charts/PieCharts';
 
 import './index.css';
 import reducers from './redux/reducers';
@@ -27,6 +28,7 @@ ReactDOM.render(
     <Router history={history}>
       <Route path='/' component={Home} />
       <Route path='/charts' component={Charts} />
+      <Route path='/pie' component={PieCharts} />
     </Router>
   </Provider>,
   document.getElementById('root')
