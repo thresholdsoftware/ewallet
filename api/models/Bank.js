@@ -10,7 +10,7 @@ module.exports = {
     bankAccountNo: {
       type: 'string',
       required: true,
-      unique:true
+      unique: true
     },
     bank: {
       type: 'string',
@@ -34,6 +34,6 @@ module.exports = {
       id: accountId
     }, {bank: values.id}).then(() => {
       cb();
-    }, err => cb(err));
+    }, (err) => cb(err));
   }
 };

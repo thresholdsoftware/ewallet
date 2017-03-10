@@ -5,9 +5,10 @@ import {Provider} from 'react-redux';
 import {Router, Route, browserHistory} from 'react-router';
 import {syncHistoryWithStore, routerReducer} from 'react-router-redux';
 
-import App from './pages/App/App';
-import './index.css';
+import Home from './pages/Home/Home';
+import Charts from './pages/Charts/Charts';
 
+import './index.css';
 import reducers from './redux/reducers';
 
 // Add the reducer to your store on the `routing` key
@@ -24,7 +25,8 @@ const history = syncHistoryWithStore(browserHistory, store);
 ReactDOM.render(
   <Provider store={store}>
     <Router history={history}>
-      <Route path='/' component={App} />
+      <Route path='/' component={Home} />
+      <Route path='/charts' component={Charts} />
     </Router>
   </Provider>,
   document.getElementById('root')

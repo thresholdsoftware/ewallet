@@ -25,6 +25,6 @@ module.exports = {
       id: accountId
     }, {userprofile: values.id}).then(() => {
       cb();
-    }, err => cb(err));
+    }, (err) => cb(err));
   }
 };
