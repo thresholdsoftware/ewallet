@@ -1,29 +1,31 @@
-import angular from 'angular';
-import 'angular-route';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import {createStore, combineReducers} from 'redux';
+import {Provider} from 'react-redux';
+import {Router, Route, browserHistory} from 'react-router';
+import {syncHistoryWithStore, routerReducer} from 'react-router-redux';
 
-import mainController from './controllers/mainController';
-import loginController from './controllers/loginController';
+import App from './pages/App/App';
+import './index.css';
 
-import apiService from './services/apiService';
+import reducers from './redux/reducers';
 
-const ewapp = angular.module('ewapp', ['ngRoute']);
+// Add the reducer to your store on the `routing` key
+const store = createStore(
+  combineReducers({
+    ...reducers,
+    routing: routerReducer
+  })
+);
 
-ewapp.controller('mainController', mainController);
-ewapp.controller('loginController', loginController);
-ewapp.service('api', apiService);
+// Create an enhanced history that syncs navigation events with the store
+const history = syncHistoryWithStore(browserHistory, store);
 
-ewapp.config([
-  '$routeProvider',
-  '$httpProvider',
-  ($routeProvider, $httpProvider) => {
-    $routeProvider.when('/main', {
-      templateUrl: 'src/views/main.html',
-      controller: 'mainController'
-    }).when('/', {
-      templateUrl: 'src/views/login.html',
-      controller: 'loginController'
-    }).otherwise({redirectTo: '/'});
-
-    $httpProvider.defaults.withCredentials = true;
-  }
-]);
+ReactDOM.render(
+  <Provider store={store}>
+    <Router history={history}>
+      <Route path='/' component={App} />
+    </Router>
+  </Provider>,
+  document.getElementById('root')
+);
