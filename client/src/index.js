@@ -5,12 +5,12 @@ import {Provider} from 'react-redux';
 import {Router, Route, browserHistory} from 'react-router';
 import {syncHistoryWithStore, routerReducer} from 'react-router-redux';
 
+import DbSearch from './pages/DbSearch/DbSearch';
 import Home from './pages/Home/Home';
 import Charts from './pages/Charts/Charts';
 import PieCharts from './pages/Charts/PieCharts';
-
-import './index.css';
 import reducers from './redux/reducers';
+import './index.css';
 
 // Add the reducer to your store on the `routing` key
 const store = createStore(
@@ -29,6 +29,7 @@ ReactDOM.render(
       <Route path='/' component={Home} />
       <Route path='/charts' component={Charts} />
       <Route path='/pie' component={PieCharts} />
+      <Route path='/search' component={DbSearch} />
     </Router>
   </Provider>,
   document.getElementById('root')
