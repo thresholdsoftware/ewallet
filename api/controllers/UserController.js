@@ -2,15 +2,11 @@ import _ from 'lodash';
 
 const signup = (req, res) => {
   const {phone, password, name, email} = req.body;
-  return Account.create({phone, password})
-  .then(acc => UserProfile.create({name, email, account: acc.id}))
-  .then(uprofile => Balance.create({account: uprofile.account, balance: 0}))
-  .then(balance => Account.findOne({id: balance.account}).populateAll())
-  .then((account) => {
-    return res.status(200).json(account);
-  }).catch((err) => {
-    return res.status(400).json(err);
-  });
+  return Account.create({phone, password}).
+  then((acc) => UserProfile.create({name, email, account: acc.id})).
+  then((uprofile) => Balance.create({account: uprofile.account, balance: 0})).
+  then((balance) => Account.findOne({id: balance.account}).populateAll()).
+  then((account) => res.status(200).json(account)).catch((err) => res.status(400).json(err));
 };
 
 const getUser = (req, res) => {
@@ -20,9 +16,7 @@ const getUser = (req, res) => {
       return res.status(404).json({message: 'user not present'});
     }
     return res.status(200).json(u);
-  }).catch((err) => {
-    return res.status(500).json(err);
-  });
+  }).catch((err) => res.status(500).json(err));
 };
 
 const updateUserProfile = (req, res) => {
@@ -38,9 +32,7 @@ const updateUserProfile = (req, res) => {
     return up;
   }).then((up) => {
     res.status(200).json(up);
-  }).catch((err) => {
-    return res.status(500).json(err);
-  });
+  }).catch((err) => res.status(500).json(err));
 };
 
 const updateBankDetails = (req, res) => {
@@ -56,28 +48,16 @@ const updateBankDetails = (req, res) => {
       return Bank.create(accDetails);
     }
     return b;
-  }).then(b => res.status(200).json(b)).catch(err => res.status(500).json(err));
+  }).then((b) => res.status(200).json(b)).catch((err) => res.status(500).json(err));
 };
 
-const passwordReset = (req, res) => {
-  return Account.update({
-    id: req.user.id
-  }, req.body.newPassword).then((u) => {
-    return res.status(200).json(u);
-  }).catch((err) => {
-    return res.status(500).json(err);
-  });
-};
+const passwordReset = (req, res) => Account.update({
+  id: req.user.id
+}, req.body.newPassword).then((u) => res.status(200).json(u)).catch((err) => res.status(500).json(err));
 
-const deactivateAccount = (req, res) => {
-  return Account.update({
-    id: req.user.id
-  }, {status: 'inactive'}).then((u) => {
-    return res.status(200).json(u);
-  }).catch((err) => {
-    return res.status(500).json(err);
-  });
-};
+const deactivateAccount = (req, res) => Account.update({
+  id: req.user.id
+}, {status: 'inactive'}).then((u) => res.status(200).json(u)).catch((err) => res.status(500).json(err));
 
 module.exports = {
   signup,

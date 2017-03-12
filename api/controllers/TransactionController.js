@@ -1,10 +1,10 @@
 const transact = (req, res) => {
   const toPhone = req.body.to_phone;
   const amount = parseFloat(req.body.amount);
-  var fromName='';
-  UserProfile.findOne({id:req.user.userprofile}).then((fromProf) =>{
-        fromName=fromProf;
-    });
+  var fromName = '';
+  UserProfile.findOne({id: req.user.userprofile}).then((fromProf) => {
+    fromName = fromProf;
+  });
   return Account.findOne({phone: toPhone}).populate('userprofile').then((toAcc) => {
     if (!toAcc) {
       throw new Error('Destination Account doesnt exist!');
@@ -32,7 +32,7 @@ const testCreditTransaction = (req, res) => {
     to_account: req.user.id,
     transaction_type: 'CREDIT',
     amount: req.body.amount,
-    metadata: `From Bank Account`
+    metadata: 'From Bank Account'
   };
   return Transaction.create(t).then((u) => {
     res.status(200).json(u);
@@ -64,7 +64,7 @@ const getTransactions = (req, res) => {
       }
     },
     sort: 'createdAt DESC'
-  }).populate('from_account').populate('to_account').then(u => res.status(200).json(u)).catch(err => res.status(500).json(err));
+  }).populate('from_account').populate('to_account').then((u) => res.status(200).json(u)).catch((err) => res.status(500).json(err));
 };
 
 module.exports = {
