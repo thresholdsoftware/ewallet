@@ -66,10 +66,15 @@ module.exports.routes = {
   'post /activate-scratch-card-group': 'ScratchCardController.activateScratchCardGroup',
   '/transaction': { policy: 'isAuthenticated' },
   '/ScratchCard': { policy: 'isAuthenticated' },
-  '/Bank': { policy: 'isAuthenticated' }
+  '/Bank': { policy: 'isAuthenticated' },
 
 
-  /* **************************************************************************
+  'get /transactionFees' : 'TransactionFeeController.getTransactionFees',
+  'post /createTransactionFee' : 'TransactionFeeController.createTransactionFee',
+  'put /updateTransactionFee/:transactionType' : 'TransactionFeeController.updateTransactionFee'
+
+  /* ***
+  ***********************************************************************
   *                                                                          *
   * Custom routes here...                                                    *
   *                                                                          *

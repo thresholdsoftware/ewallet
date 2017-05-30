@@ -22,9 +22,9 @@ module.exports = {
                 new winston.transports.DailyRotateFile({
                     'filename': './logs/info-',
                     'datePattern': 'yyyy-MM-dd.log',
-                    'prepend': false,
+                    'prepend': true,
                     'level': 'info',
-                    'colorize':false,
+                    'json':false
                     
                 })
             ]
