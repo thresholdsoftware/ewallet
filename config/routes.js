@@ -75,7 +75,10 @@ module.exports.routes = {
 
   'get /creditRequests' : 'CreditRequestController.getCreditRequests',
   'put /updateCreditRequest/:transactionId' : 'CreditRequestController.updateCreditRequest',
-  'post /createCreditRequest' : 'CreditRequestController.createCreditRequest'
+  'post /createCreditRequest' : 'CreditRequestController.createCreditRequest',
+
+  'post /sendVerificationMessage' : 'TwillioController.sendVerificationMessage',
+  'post /verifyMessage' : 'TwillioController.verifyMessage',
 
   /* ***
   ***********************************************************************
