@@ -25,7 +25,14 @@ module.exports.bootstrap = function(cb) {
 				 IF (select balance from balance where account=NEW.from_account)<NEW.amount AND NEW.transaction_type="WALLET" THEN
 						signal sqlstate '45002' set message_text = "Insufficient Balance";
 				 END IF;
-				 update balance set balance = IFNULL(((select SUM(amount) from ewallet.transaction where to_account=NEW.to_account)-IFNULL((select SUM(amount) from ewallet.transaction where from_account=NEW.to_account ),0)),NEW.amount) where account = NEW.to_account;
+
+				 IF new.transaction_type = "WALLET" THEN 
+				 	update balance set balance = IFNULL(((select SUM(finalAmount) from ewallet.transaction where to_account=NEW.to_account)-IFNULL((select SUM(finalAmount) from ewallet.transaction where from_account=NEW.to_account ),0)),NEW.amount) where account = NEW.to_account;
+				 END If;
+
+				 IF new.transaction_type  = "CREDIT" THEN 
+				 	 update balance set balance = IFNULL(((select SUM(amount) from ewallet.transaction where to_account=NEW.to_account)-IFNULL((select SUM(amount) from ewallet.transaction where from_account=NEW.to_account ),0)),NEW.amount) where account = NEW.to_account;
+				 END IF;
 
 				 update balance set balance = IFNULL(((select SUM(amount) from ewallet.transaction where to_account=NEW.from_account)-IFNULL((select SUM(amount) from ewallet.transaction where from_account=NEW.from_account),0)),0) where account = NEW.from_account;
 		 END;
@@ -39,3 +46,6 @@ module.exports.bootstrap = function(cb) {
   // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)
   cb();
 };
+
+
+//	update balance set balance = (IFNULL(((select SUM(amount) from ewallet.transaction where to_account=NEW.to_account )-IFNULL((select SUM(amount) from ewallet.transaction where from_account=NEW.to_account ),0)),NEW.amount)-(NEW.finalAmount)) where account = NEW.to_account;

@@ -22,6 +22,9 @@ module.exports = {
     metadata: {
       type: 'string',
       required: true
+    },
+    finalAmount:{
+      type : 'string'
     }
   }
 };
