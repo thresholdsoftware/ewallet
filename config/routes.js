@@ -71,7 +71,11 @@ module.exports.routes = {
 
   'get /transactionFees' : 'TransactionFeeController.getTransactionFees',
   'post /createTransactionFee' : 'TransactionFeeController.createTransactionFee',
-  'put /updateTransactionFee/:transactionType' : 'TransactionFeeController.updateTransactionFee'
+  'put /updateTransactionFee/:transactionType' : 'TransactionFeeController.updateTransactionFee',
+
+  'get /creditRequests' : 'CreditRequestController.getCreditRequests',
+  'put /updateCreditRequest/:transactionId' : 'CreditRequestController.updateCreditRequest',
+  'post /createCreditRequest' : 'CreditRequestController.createCreditRequest'
 
   /* ***
   ***********************************************************************

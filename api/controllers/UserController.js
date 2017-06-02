@@ -9,6 +9,7 @@ const signup = (req, res) => {
   .then((account) => {
     return res.status(200).json(account);
   }).catch((err) => {
+    console.log(err);
     return res.status(400).json(err);
   });
 };
