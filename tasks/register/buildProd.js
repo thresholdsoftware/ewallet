@@ -15,7 +15,7 @@
  *   http://sailsjs.org/documentation/anatomy/my-app/tasks/register/build-prod-js
  *
  */
-module.exports = function(grunt) {
+module.exports = function (grunt) {
   grunt.registerTask('buildProd', [
     'compileAssets',
     'concat',
@@ -26,4 +26,3 @@ module.exports = function(grunt) {
     'copy:build'
   ]);
 };
-

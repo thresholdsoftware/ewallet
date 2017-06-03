@@ -23,8 +23,8 @@ module.exports = {
       type: 'string',
       required: true
     },
-    finalAmount:{
-      type : 'string'
+    finalAmount: {
+      type: 'string'
     }
   }
 };

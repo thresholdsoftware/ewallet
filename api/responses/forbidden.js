@@ -86,4 +86,3 @@ module.exports = function forbidden (data, options) {
   });
 
 };
-
