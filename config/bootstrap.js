@@ -26,11 +26,11 @@ module.exports.bootstrap = function(cb) {
 						signal sqlstate '45002' set message_text = "Insufficient Balance";
 				 END IF;
 
-				 IF new.transaction_type = "WALLET" THEN 
+				 IF new.transaction_type = "WALLET" THEN
 				 	update balance set balance = IFNULL(((select SUM(finalAmount) from ewallet.transaction where to_account=NEW.to_account)-IFNULL((select SUM(finalAmount) from ewallet.transaction where from_account=NEW.to_account ),0)),NEW.amount) where account = NEW.to_account;
 				 END If;
 
-				 IF new.transaction_type  = "CREDIT" THEN 
+				 IF new.transaction_type  = "CREDIT" THEN
 				 	 update balance set balance = IFNULL(((select SUM(amount) from ewallet.transaction where to_account=NEW.to_account)-IFNULL((select SUM(amount) from ewallet.transaction where from_account=NEW.to_account ),0)),NEW.amount) where account = NEW.to_account;
 				 END IF;
 

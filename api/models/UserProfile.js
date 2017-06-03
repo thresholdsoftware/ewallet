@@ -19,9 +19,9 @@ module.exports = {
       type: 'email'
     },
     distributor: {
-    type: 'boolean',
-    defaultsTo : false
-  }
+      type: 'boolean',
+      defaultsTo: false
+    }
   },
   afterCreate: (values, cb) => {
     const accountId = values.account;

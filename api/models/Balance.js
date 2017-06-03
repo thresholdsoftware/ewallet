@@ -16,6 +16,6 @@ module.exports = {
       id: accountId
     }, {balanceAccount: values.id}).then(() => {
       cb();
-    }, err => cb(err));
+    }, (err) => cb(err));
   }
 };
