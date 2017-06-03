@@ -2,12 +2,11 @@
 
 module.exports = {
   attributes: {
-  userProfile: {
+    userProfile: {
       model: 'UserProfile',
       required: true,
-      
+
     },
-   
     creditStatus: {
       type: 'string',
       enum: [
@@ -15,9 +14,9 @@ module.exports = {
       ],
       required: true
     },
-    transactionId:{
-      type : 'integer',
-      unique:true
+    transactionId: {
+      type: 'integer',
+      unique: true
     }
   }
 };

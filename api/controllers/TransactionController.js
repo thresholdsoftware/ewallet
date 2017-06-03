@@ -1,23 +1,20 @@
+/* globals sails, TransactionFee*/
 const transact = (req, res) => {
   const toPhone = req.body.to_phone;
   const amount = parseFloat(req.body.amount);
-  var fromName='';
-  const transactionFee = 0;
+  var fromName = '';
   var finalAmount;
-  UserProfile.findOne({id:req.user.userprofile}).then((fromProf) =>{
-        fromName=fromProf;
-    });
+  UserProfile.findOne({id: req.user.userprofile}).then((fromProf) => {
+    fromName = fromProf;
+  });
 
-  TransactionFee.findOne({transactionType:'WALLET'}).then((tf)=>{
-      var fee = 0;
-      console.log(tf)
-      console.log(amount);
-      fee = tf.transactionFee*amount/100; 
-      finalAmount = amount-fee;
-      //finalAmount = fee;
-      sails.log.info("final Amount to transfer === ");
-      sails.log.info(finalAmount);
-  })
+  TransactionFee.findOne({transactionType: 'WALLET'}).then((tf) => {
+    var fee = 0;
+    fee = tf.transactionFee * amount / 100;
+    finalAmount = amount - fee;
+    sails.log.info('final Amount to transfer === ');
+    sails.log.info(finalAmount);
+  });
 
   return Account.findOne({phone: toPhone}).populate('userprofile').then((toAcc) => {
     if (!toAcc) {
@@ -26,13 +23,11 @@ const transact = (req, res) => {
     if (!amount || amount === 0) {
       throw new Error('Invalid amount !');
     }
-    console.log("final amount here ====");
-    console.log(finalAmount);
-    return Transaction.create({from_account: req.user.id, to_account: toAcc.id, transaction_type: 'WALLET',finalAmount :finalAmount ,amount, metadata: `{"from_name": \"${fromName.name}\" ,  "to_name": \"${toAcc.userprofile.name}\"}`});
+    return Transaction.create({from_account: req.user.id, to_account: toAcc.id, transaction_type: 'WALLET', finalAmount: finalAmount, amount, metadata: `{"from_name": \"${fromName.name}\" ,  "to_name": \"${toAcc.userprofile.name}\"}`});
   }).then((t) => {
     res.status(200).json(t);
   }, (err) => {
-    console.log(err);
+    sails.log.error(err);
     res.status(400).json({
       err: err.message || err
     });
@@ -45,8 +40,8 @@ const testCreditTransaction = (req, res) => {
     to_account: req.user.id,
     transaction_type: 'CREDIT',
     amount: req.body.amount,
-    metadata: `From Bank Account`,
-    finalAmount : req.body.amount
+    metadata: 'From Bank Account',
+    finalAmount: req.body.amount
   };
   return Transaction.create(t).then((u) => {
     res.status(200).json(u);
@@ -122,7 +117,7 @@ const getTransactions = (req, res) => {
       }
     },
     sort: 'createdAt DESC'
-  }).populate('from_account').populate('to_account').then(u => res.status(200).json(u)).catch(err => res.status(500).json(err));
+  }).populate('from_account').populate('to_account').then((u) => res.status(200).json(u)).catch((err) => res.status(500).json(err));
 };
 
 module.exports = {

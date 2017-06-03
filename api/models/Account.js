@@ -80,7 +80,7 @@ module.exports = {
       collection: 'Transaction',
       via: 'to_account'
     },
-    toJSON: function toJSON() {
+    toJSON: function toJSON () {
       var obj = this.toObject(); //eslint-disable-line
       return removePassword(obj);
     }

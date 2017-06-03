@@ -1,15 +1,7 @@
-
 const authyKey = 'JzpgXfrLMqoEkUjBozVOmr0cBxlKJRC5';
- var request = require('request');
- var rp = require('request-promise');
+var rp = require('request-promise');
 
-
-
-const post = (path, requestBody, hdrs, disableUrl) => {
-  const url = (disableUrl)
-    ? path
-    : (localUrl + path);
-
+const post = (url, requestBody, hdrs) => {
   const config = {
     method: 'POST',
     credentials: 'include',
@@ -23,11 +15,7 @@ const post = (path, requestBody, hdrs, disableUrl) => {
   return fetchData(url, config);
 };
 
-
-const get = (path, hdrs, disableUrl) => {
-  const url = (disableUrl)
-    ? path
-    : (localUrl + path);
+const get = (url, hdrs) => {
   const config = {
     method: 'GET',
     credentials: 'include',
@@ -40,10 +28,11 @@ const get = (path, hdrs, disableUrl) => {
 };
 
 const fetchData = (url, config) => {
-  console.log(url,config.method);
-  return rp(url, config).then((r) => {
-    return r;}
-     ).catch((error)=>{ throw error });
+  console.log(url, config.method);
+  return rp(url, config).then((r) => r
+     ).catch((error) => {
+       throw error;
+     });
 };
 
 const sendMessage = (requestBody) => {
@@ -59,9 +48,6 @@ const verifyPasscode = (phone_number, country_code, verification_code) => {
     'X-Authy-API-Key': authyKey
   }, true);
 };
-
-
-
 
 module.exports = {
   verifyPasscode,

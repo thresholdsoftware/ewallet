@@ -12,7 +12,7 @@ const generateScratchCard = (req, res) => {
   });
   return ScratchCard.create(scratchcards).then((sc) => {
     res.status(200).json(sc);
-  }).catch(err => res.status(500).json(err));
+  }).catch((err) => res.status(500).json(err));
 };
 
 const useScratchCard = (req, res) => {
@@ -41,7 +41,7 @@ const activateScratchCardGroup = (req, res) => {
   const status = req.body.status || 'active';
   return ScratchCard.update({
     generationId
-  }, {status}).then(sc => res.status(200).json(sc)).catch(err => res.status(200).json(err));
+  }, {status}).then((sc) => res.status(200).json(sc)).catch((err) => res.status(200).json(err));
 };
 
 module.exports = {
