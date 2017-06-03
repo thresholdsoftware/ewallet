@@ -57,6 +57,50 @@ const testCreditTransaction = (req, res) => {
   });
 };
 
+
+const transactionInfo = (req, res) => {
+  const toPhone = req.body.to_phone;
+  const amount = parseFloat(req.body.amount);
+  var fromName='';
+  const transactionFee = 0;
+  var finalAmount;
+  var responseMessage = {};
+  // UserProfile.findOne({id:req.user.userprofile}).then((fromProf) =>{
+  //       fromName=fromProf;
+  //   });
+
+  TransactionFee.findOne({transactionType:'WALLET'}).then((tf)=>{
+      var fee = 0;
+      
+      fee = tf.transactionFee*amount/100; 
+      finalAmount = amount-fee;
+      responseMessage.finalAmount = finalAmount;
+      
+  })
+
+  return Account.findOne({phone: toPhone}).populate('userprofile').then((toAcc) => {
+    if (!toAcc) {
+      throw new Error('Destination Account doesnt exist!');
+    }
+    if (!amount || amount === 0) {
+      throw new Error('Invalid amount !');
+    }
+    responseMessage.destinationAcc = toAcc;
+   
+  }).then((t) => {
+    console.log("logging ehre ");
+
+    
+    console.log(responseMessage);
+   return res.status(200).json(responseMessage);
+  }, (err) => {
+    console.log(err);
+    return res.status(400).json({
+      err: err.message || err
+    });
+  });
+};
+
 const getTransactions = (req, res) => {
   const defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() - 1);
@@ -84,5 +128,6 @@ const getTransactions = (req, res) => {
 module.exports = {
   transact,
   getTransactions,
-  testCreditTransaction
+  testCreditTransaction,
+  transactionInfo
 };

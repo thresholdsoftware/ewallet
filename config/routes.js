@@ -80,6 +80,8 @@ module.exports.routes = {
   'post /sendVerificationMessage' : 'TwillioController.sendVerificationMessage',
   'post /verifyMessage' : 'TwillioController.verifyMessage',
 
+  'post /transactionInfo' : 'TransactionController.transactionInfo',
+
   /* ***
   ***********************************************************************
   *                                                                          *
