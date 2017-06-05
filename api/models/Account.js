@@ -46,6 +46,9 @@ module.exports = {
       unique: true,
       required: true
     },
+    country_code:{
+      type:'string'
+    },
     password: {
       type: 'string',
       minLength: 6,
