@@ -23,7 +23,12 @@ module.exports = {
   },
 
   logout: (req, res) => {
-    req.logout();
-    res.redirect('/');
+    req.logOut();
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({message: 'Logout unsuccessful', err});
+      }
+      return res.status(200).json({message: 'Logout successful'});
+    });
   }
 };

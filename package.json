@@ -8,6 +8,7 @@
     "bcryptjs": "^2.4.0",
     "debug": "^2.2.0",
     "ejs": "2.3.4",
+    "express-mysql-session": "^1.2.0",
     "grunt": "1.0.1",
     "grunt-contrib-clean": "1.0.0",
     "grunt-contrib-coffee": "1.0.0",

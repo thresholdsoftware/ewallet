@@ -2,14 +2,14 @@
 const transact = (req, res) => {
   const toPhone = req.body.to_phone;
   const amount = parseFloat(req.body.amount);
-  var fromName = '';
-  var finalAmount;
+  let fromName = '';
+  let finalAmount;
   UserProfile.findOne({id: req.user.userprofile}).then((fromProf) => {
     fromName = fromProf;
   });
 
   TransactionFee.findOne({transactionType: 'WALLET'}).then((tf) => {
-    var fee = 0;
+    let fee = 0;
     fee = tf.transactionFee * amount / 100;
     finalAmount = amount - fee;
     sails.log.info('final Amount to transfer === ');
@@ -23,7 +23,7 @@ const transact = (req, res) => {
     if (!amount || amount === 0) {
       throw new Error('Invalid amount !');
     }
-    return Transaction.create({from_account: req.user.id, to_account: toAcc.id, transaction_type: 'WALLET', finalAmount: finalAmount, amount, metadata: `{"from_name": \"${fromName.name}\" ,  "to_name": \"${toAcc.userprofile.name}\"}`});
+    return Transaction.create({from_account: req.user.id, to_account: toAcc.id, transaction_type: 'WALLET', finalAmount, amount, metadata: `{"from_name": \"${fromName.name}\" ,  "to_name": \"${toAcc.userprofile.name}\"}`});
   }).then((t) => {
     res.status(200).json(t);
   }, (err) => {
@@ -73,7 +73,7 @@ const getTransactions = (req, res) => {
       }
     },
     sort: 'createdAt DESC'
-  }).populate('from_account').populate('to_account').then((u) => res.status(200).json(u)).catch((err) => res.status(500).json(err));
+  }).populate('from_account').populate('to_account').then(u => res.status(200).json(u)).catch(err => res.status(500).json(err));
 };
 
 module.exports = {
