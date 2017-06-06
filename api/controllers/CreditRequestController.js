@@ -33,9 +33,23 @@ const updateCreditRequest = (req, res) => {
 };
 
 
+const getUserCreditRequest = (req, res) => {
+  const userId = req.user.userprofile;
+  console.log("loggin the id of the user ==="+userId);
+  console.log(req.user)
+  return CreditRequest.find({userProfile: userId}).then((u) => {
+    if (!u || u=== undefined) {
+      return res.status(404).json({message: 'no Credit Requests Present'});
+    }
+    return res.status(200).json(u);
+  }).catch((err) => res.status(500).json(err));
+};
+
+
 module.exports = {
   getCreditRequests,
   createCreditRequest,
-  updateCreditRequest
+  updateCreditRequest,
+  getUserCreditRequest
 
 };
