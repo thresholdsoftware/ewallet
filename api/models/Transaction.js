@@ -31,6 +31,13 @@ module.exports = {
     note: {
       columnName: 'note',
       type: 'string'
+    },
+    status: {
+      columnName: 'status',
+      type: 'string',
+      defaultsTo: 'PENDING',
+      enum: ['SUCCESS', 'PENDING', 'FAILED'],
+      required: true
     }
   }
 };

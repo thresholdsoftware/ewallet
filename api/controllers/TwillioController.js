@@ -18,12 +18,12 @@ const sendVerificationMessage = (req, res) => {
 const verifyMessage = (req, res) => {
   const reqBody = _.assign({}, req.body);
   const responseMessage = {};
-  TwillioAPI.verifyPasscode(reqBody.phone, reqBody.countryCode, reqBody.code)
-  .then(() => {
+  TwillioAPI.verifyPasscode(reqBody.phone, reqBody.countryCode, reqBody.code).
+  then(() => {
     responseMessage.status = 'Verification Success!!';
     return res.status(200).json(responseMessage);
-  })
-  .catch((err) => {
+  }).
+  catch((err) => {
     sails.log.error(err);
     return res.status(500).json(err);
   });

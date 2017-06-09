@@ -49,45 +49,45 @@ const transactionInfo = (req, res) => {
 
 const testCreditTransaction = (req, res) => {
   const t = {
-    from_account: 0,
-    to_account: req.user.id,
-    transaction_type: 'CREDIT',
+    fromAccount: 0,
+    toAccount: req.user.id,
+    transactionType: 'BANK_TO_WALLET',
     amount: req.body.amount,
-    metadata: 'From Bank Account',
-    finalAmount: req.body.amount
+    note: 'From Bank Account',
+    fee: 0
   };
-  return Transaction.create(t).then((u) => {
-    res.status(200).json(u);
-  }, (err) => {
-    res.status(400).json({
-      err: err.message || err
-    });
-  });
+  return Transaction.create(t).
+  then((u) => res.status(200).json(u)).
+  catch((err) => res.status(400).json({err}));
 };
 
 
+const _transactionFilterCondition = (account, typeOfTransaction) => {
+  // here type of transaction is DEBIT, CREDIT or ALL
+  switch (typeOfTransaction) {
+  case 'DEBIT': return {fromAccount: account};
+  case 'CREDIT': return {toAccount: account};
+  default: return {or: [{fromAccount: account}, {toAccount: account}]};
+  }
+};
+
 const getTransactions = (req, res) => {
   const defaultDate = new Date();
-  defaultDate.setDate(defaultDate.getDate() - 1);
-  const fromDate = new Date(req.query.from_date || defaultDate);
-  const toDate = new Date(req.query.to_date || Date.now());
-  const account = req.user.id;
-  Transaction.find({
+  defaultDate.setDate(defaultDate.getDate() - 31); // one month approx
+  const fromDate = new Date(req.query.fromDate || defaultDate);
+  const toDate = new Date(req.query.toDate || Date.now());
+  const account = req.user.id || null;
+  const page = req.query.page || 1;
+  const type = req.query.type || 'ALL';
+  return Transaction.find({
     where: {
-      or: [
-        {
-          from_account: account
-        }, {
-          to_account: account
-        }
-      ],
-      createdAt: {
-        '>=': fromDate,
-        '<=': toDate
-      }
+      ..._transactionFilterCondition(account, type),
+      createdAt: {'>=': fromDate, '<=': toDate}
     },
     sort: 'createdAt DESC'
-  }).populate('from_account').populate('to_account').then((u) => res.status(200).json(u)).catch((err) => res.status(500).json(err));
+  }).populate('fromAccount').populate('toAccount').paginate({page, limit: 10}).
+  then((u) => res.status(200).json(u)).
+  catch((err) => res.status(500).json(err));
 };
 
 module.exports = {
