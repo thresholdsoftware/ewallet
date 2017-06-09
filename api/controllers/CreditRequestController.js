@@ -11,6 +11,7 @@ const getCreditRequests = (req, res) => CreditRequest.find().populateAll().then(
 
 const createCreditRequest = (req, res) => {
   const reqBody = _.assign({}, req.body);
+  reqBody.creditStatus = 'PENDING';
   return CreditRequest.create(reqBody).then((sc) => {
     res.status(200).json(sc);
   }).catch((err) => {
