@@ -3,9 +3,9 @@ import result from 'lodash/result';
 import {getTransferType} from '../utils/transformer.util';
 
 const _generateTransactionInfo = (fromUserPhone, toUserPhone, transferAmount) => {
-  const fromPhone = parseInt(fromUserPhone);
-  const toPhone = parseInt(toUserPhone);
-  const amount = parseInt(transferAmount);
+  const fromPhone = parseInt(fromUserPhone) || null;
+  const toPhone = parseInt(toUserPhone) || null;
+  const amount = parseInt(transferAmount) || null;
   if (!amount) {
     throw {message: 'Invalid amount'};
   }

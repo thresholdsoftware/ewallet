@@ -23,14 +23,14 @@ module.exports = {
       type: 'integer',
       required: true
     },
-    transactionFee: {
+    fee: {
       columnName: 'transaction_fee',
-      type: 'float'
+      type: 'float',
+      required: true
     },
     note: {
       columnName: 'note',
-      type: 'string',
-      required: true
+      type: 'string'
     }
   }
 };

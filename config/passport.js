@@ -18,7 +18,7 @@ passport.use(new LocalStrategy({
   usernameField: 'phone',
   passwordField: 'password'
 }, function(phone, password, done) {
-  Account.findOne({phone: phone}).populate('userprofile').populate('balanceAccount').then(function(user) {
+  Account.findOne({phone: phone}).populate('userProfile').populate('balanceAccount').then(function(user) {
     if (!user) {
       return done(null, false, {message: 'Incorrect credentials'});
     }

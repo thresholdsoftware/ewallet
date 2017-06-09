@@ -10,7 +10,7 @@ const signup = (req, res) => {
 
 const getUser = (req, res) => {
   const userId = req.user.id;
-  return Account.findOne({id: userId}).populate('userprofile').populate('balanceAccount').
+  return Account.findOne({id: userId}).populate('userProfile').populate('balanceAccount').
   then((user) => {
     if (!user) {
       return res.status(404).json({message: 'user not present'});
@@ -26,7 +26,7 @@ const updateUserProfile = (req, res) => {
   return UserProfile.update({account: userId}, userDetails).
   then((updated) => {
     if (!updated[0]) {
-      return UserProfile.create(Object.assign({}, userDetails, {account: userId}));
+      return UserProfile.create({...userDetails, account: userId});
     }
     return updated[0];
   }).

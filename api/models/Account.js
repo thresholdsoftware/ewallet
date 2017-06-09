@@ -39,17 +39,15 @@ module.exports = {
       unique: true
     },
     userProfile: {
-      column: 'user_profile',
+      columnName: 'user_profile',
       model: 'UserProfile',
       unique: true
     },
     fromTransactions: {
-      column: 'from_transactions',
       collection: 'Transaction',
       via: 'fromAccount'
     },
     toTransactions: {
-      column: 'to_transactions',
       collection: 'Transaction',
       via: 'toAccount'
     },

@@ -1,9 +1,8 @@
-/* global sails, TransactionFee*/
+/* global TransactionFee*/
 const transactionTypes = require('../../config/transaction').transactionTypes;
 
-const generateTrigger = () => {
-  return new Promise((resolve, reject) => {
-    Balance.query(`
+const generateTrigger = () => new Promise((resolve, reject) => {
+  Balance.query(`
       CREATE TRIGGER UpdateBalanceTrigger after INSERT ON transaction
        FOR EACH ROW
        BEGIN
@@ -30,18 +29,17 @@ const generateTrigger = () => {
            update balance set balance = IFNULL(((select SUM(amount) from ewallet.transaction where to_account=NEW.from_account)-IFNULL((select SUM(amount) from ewallet.transaction where from_account=NEW.from_account),0)),0) where account = NEW.from_account;
         END
     `, (err, records) => {
-      if (err) {
-        return reject(err);
-      }
-      return resolve(records);
-    });
+    if (err) {
+      return reject(err);
+    }
+    return resolve(records);
   });
-};
+});
 
 
-const createTransactionFee = (transactionType, transactionFee) => {
+const _createTransactionFee = (transactionType, fee) => {
   if (transactionTypes.includes(transactionType)) {
-    return TransactionFee.findOrCreate({transactionType}, {transactionType, transactionFee});
+    return TransactionFee.findOrCreate({transactionType}, {transactionType, fee});
   }
   return Promise.reject({message: `The transactionType ${transactionType} is not one of ${transactionTypes}`});
 };
@@ -49,10 +47,10 @@ const createTransactionFee = (transactionType, transactionFee) => {
 const generateTransactionFeeEnteries = () => {
   const defaultFees = 0;
   return Promise.all([
-    createTransactionFee('BANK_TO_WALLET', defaultFees),
-    createTransactionFee('WALLET_TO_WALLET', defaultFees),
-    createTransactionFee('DISTRIBUTOR_TO_WALLET', defaultFees),
-    createTransactionFee('WALLET_TO_DISTRIBUTOR', defaultFees)
+    _createTransactionFee('BANK_TO_WALLET', defaultFees),
+    _createTransactionFee('WALLET_TO_WALLET', defaultFees),
+    _createTransactionFee('DISTRIBUTOR_TO_WALLET', defaultFees),
+    _createTransactionFee('WALLET_TO_DISTRIBUTOR', defaultFees)
   ]);
 };
 

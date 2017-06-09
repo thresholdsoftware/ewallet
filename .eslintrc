@@ -40,6 +40,7 @@
     "mocha": true
   },
   "globals": {
+    "Promise": true,
     "Logger": true,
     "Account": true,
     "UserProfile": true,
