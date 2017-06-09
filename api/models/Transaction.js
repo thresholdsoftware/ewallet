@@ -1,30 +1,36 @@
+const transactionTypes = require('../../config/transaction').transactionTypes;
+
 module.exports = {
   attributes: {
-    from_account: {
+    fromAccount: {
+      columnName: 'from_account',
       model: 'Account',
       required: true
     },
-    to_account: {
+    toAccount: {
+      columnName: 'to_account',
       model: 'Account',
       required: true
     },
-    transaction_type: {
+    transactionType: {
+      columnName: 'transaction_type',
       type: 'string',
-      enum: [
-        'CREDIT', 'WALLET'
-      ],
+      enum: transactionTypes,
       required: true
     },
     amount: {
+      columnName: 'amount',
       type: 'integer',
       required: true
     },
-    metadata: {
+    transactionFee: {
+      columnName: 'transaction_fee',
+      type: 'float'
+    },
+    note: {
+      columnName: 'note',
       type: 'string',
       required: true
-    },
-    finalAmount: {
-      type: 'string'
     }
   }
 };

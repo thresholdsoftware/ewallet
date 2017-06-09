@@ -8,19 +8,24 @@
 module.exports = {
   attributes: {
     name: {
+      columnName: 'name',
       type: 'string'
     },
     account: {
+      columnName: 'account',
       model: 'Account',
       required: true,
       unique: true
     },
     email: {
+      columnName: 'email',
       type: 'email'
     },
-    distributor: {
-      type: 'boolean',
-      defaultsTo: false
+    userType: {
+      columnName: 'user_type',
+      type: 'string',
+      enum: ['REGULAR', 'DISTRIBUTOR', 'BANK_ADMIN'],
+      defaultsTo: 'REGULAR'
     }
   },
   afterCreate: (values, cb) => {
@@ -29,6 +34,6 @@ module.exports = {
       id: accountId
     }, {userprofile: values.id}).then(() => {
       cb();
-    }, err => cb(err));
+    }, (err) => cb(err));
   }
 };

@@ -18,13 +18,13 @@ passport.use(new LocalStrategy({
   usernameField: 'phone',
   passwordField: 'password'
 }, function(phone, password, done) {
-  Account.findOne({phone: phone}).populate('userprofile').populate('balanceAccount').populate('bank').then(function(user) {
+  Account.findOne({phone: phone}).populate('userprofile').populate('balanceAccount').then(function(user) {
     if (!user) {
-      return done(null, false, {message: 'Incorrect phone.'});
+      return done(null, false, {message: 'Incorrect credentials'});
     }
     bcrypt.compare(password, user.password, function(err, res) {
       if (!res) {
-        return done(null, false, {message: 'Invalid Password'});
+        return done(null, false, {message: 'Incorrect credentials'});
       }
       return done(null, user, {message: 'Logged In Successfully'});
     });

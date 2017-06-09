@@ -7,7 +7,8 @@ module.exports = {
       size: 64
     },
     account: {
-      model: 'Account'
+      model: 'Account',
+      required: true
     }
   },
   afterCreate: (values, cb) => {

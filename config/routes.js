@@ -49,7 +49,6 @@ module.exports.routes = {
   'post /signup': 'UserController.signup',
   'get /user': 'UserController.getUser',
   'get /balance': 'BalanceController.getBalance',
-  'post /bank-details': 'UserController.updateBankDetails',
   'get /transactions': 'TransactionController.getTransactions',
   'post /profile': 'UserController.updateUserProfile',
   'post /passwordreset': 'UserController.passwordReset',
@@ -70,7 +69,6 @@ module.exports.routes = {
 
 
   'get /transactionFees' : 'TransactionFeeController.getTransactionFees',
-  'post /createTransactionFee' : 'TransactionFeeController.createTransactionFee',
   'put /updateTransactionFee/:transactionType' : 'TransactionFeeController.updateTransactionFee',
 
   'get /creditRequests' : 'CreditRequestController.getCreditRequests',
