@@ -1,8 +1,8 @@
 const MySQLSessionStore = require('express-mysql-session');
 
-module.exports = function setupSessionStore(sails) {
+module.exports = function setupSessionStore (sails) {
   return {
-    configure() {
+    configure () {
       const conn = sails.config.models.connection;
       //eslint-disable-next-line
       sails.config.session.store = new MySQLSessionStore({

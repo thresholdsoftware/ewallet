@@ -5,8 +5,8 @@ const getBalance = (req, res) => {
       return res.status(404).json({message: 'record not found'});
     }
     return res.status(200).json(u);
-  })
-  .catch(err => res.status(500).json(err));
+  }).
+  catch((err) => res.status(500).json(err));
 };
 
 module.exports = {

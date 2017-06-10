@@ -14,7 +14,6 @@ const createCreditRequest = (req, res) => {
   return CreditRequest.create(reqBody).then((sc) => {
     res.status(200).json(sc);
   }).catch((err) => {
-    console.log(err);
     sails.log.error(err);
     res.status(500).json(err);
   });
