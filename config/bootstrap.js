@@ -11,12 +11,18 @@ var dbHelper = require('../api/utils/dbHelper.util');
  */
 
 module.exports.bootstrap = function(cb) {
-  dbHelper.generateTrigger()
-  .then((records)=>console.log('Added triggers succesfully',records))
+  dbHelper.cleanupProcedures()
+  .then(()=>dbHelper.generateCalculateBalanceSP())
+  .then(()=>dbHelper.generateTrigger())
+  .then(()=>console.log('Setting up Trigger'))
   .catch((err)=>sails.log.error(err));
 
   dbHelper.generateTransactionFeeEnteries()
   .then(()=>console.log('Setup transaction fees'))
+  .catch((err)=>sails.log.error(err));
+
+  dbHelper.generateBankAccount()
+  .then(()=>console.log('Generating bank account'))
   .catch((err)=>sails.log.error(err));
   // It's very important to trigger this callback method when you are finished
   // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)

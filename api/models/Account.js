@@ -12,6 +12,7 @@ module.exports = {
     phone: {
       columnName: 'phone',
       type: 'integer',
+      size: 64,
       unique: true,
       required: true
     },

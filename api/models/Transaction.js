@@ -1,4 +1,4 @@
-const transactionTypes = require('../../config/transaction').transactionTypes;
+import {transactionTypes} from '../../config/transaction';
 
 module.exports = {
   attributes: {
@@ -28,16 +28,14 @@ module.exports = {
       type: 'float',
       required: true
     },
+    totalAmount: {
+      columnName: 'total_amount',
+      type: 'float',
+      required: true
+    },
     note: {
       columnName: 'note',
       type: 'string'
-    },
-    status: {
-      columnName: 'status',
-      type: 'string',
-      defaultsTo: 'PENDING',
-      enum: ['SUCCESS', 'PENDING', 'FAILED'],
-      required: true
     }
   }
 };

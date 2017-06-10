@@ -24,4 +24,9 @@ export const hashPassword = (ac, cb) => {
   });
 };
 
-export const getTransferType = (fromAccount, toAccount) => 'WALLET_TO_WALLET';
+export const getTransferType = (fromAccount, toAccount) => 'WALLET_TO_WALLET'; //eslint-disable-line
+
+export const getTotalAmount = (amount, feeRate) => {
+  const fee = ((feeRate / 100.0) * amount);
+  return amount + fee;
+};

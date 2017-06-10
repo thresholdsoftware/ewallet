@@ -1,6 +1,6 @@
 /* globals , TransactionFee*/
 import result from 'lodash/result';
-import {getTransferType} from '../utils/transformer.util';
+import {getTransferType, getTotalAmount} from '../utils/transformer.util';
 
 const _generateTransactionInfo = (fromUserPhone, toUserPhone, transferAmount) => {
   const fromPhone = parseInt(fromUserPhone) || null;
@@ -19,7 +19,8 @@ const _generateTransactionInfo = (fromUserPhone, toUserPhone, transferAmount) =>
       if (!transactionFee) {
         throw {message: 'Unsupported Transaction type', transactionType};
       }
-      return {fromAccount, toAccount, transactionType, amount, fee: transactionFee.fee};
+      const totalAmount = getTotalAmount(amount, transactionFee.fee);
+      return {fromAccount, toAccount, transactionType, amount, fee: transactionFee.fee, totalAmount};
     });
   });
 };
@@ -30,9 +31,10 @@ const transact = (req, res) => {
   const amount = result(req, 'body.amount');
   return _generateTransactionInfo(fromPhone, toPhone, amount).
   then((transactionInfo) => {
-    const {fromAccount, toAccount, transactionType, amount, fee} = transactionInfo;
-    return Transaction.create({fromAccount: fromAccount.phone,
-      fee, toAccount: toAccount.phone, transactionType, amount});
+    const {fromAccount, toAccount, transactionType, amount, fee, totalAmount} = transactionInfo;
+
+    return Transaction.create({fromAccount: fromAccount.id,
+      fee, toAccount: toAccount.id, transactionType, amount, totalAmount});
   }).
   then((transaction) => res.status(200).json(transaction)).
   catch((err) => res.status(400).json(err));
@@ -48,15 +50,23 @@ const transactionInfo = (req, res) => {
 };
 
 const testCreditTransaction = (req, res) => {
-  const t = {
-    fromAccount: 0,
-    toAccount: req.user.id,
-    transactionType: 'BANK_TO_WALLET',
-    amount: req.body.amount,
-    note: 'From Bank Account',
-    fee: 0
-  };
-  return Transaction.create(t).
+  UserProfile.findOne({userType: 'BANK_ADMIN'}).then((bankUser) => {
+    if (!bankUser) {
+      throw {message: 'No Bank User in the system'};
+    }
+    const amount = result(req, 'body.amount');
+    const fee = 0;
+    const t = {
+      fromAccount: bankUser.account,
+      toAccount: req.user.id,
+      transactionType: 'BANK_TO_WALLET',
+      note: 'From Bank Account',
+      amount,
+      fee,
+      totalAmount: getTotalAmount(amount, fee)
+    };
+    return Transaction.create(t);
+  }).
   then((u) => res.status(200).json(u)).
   catch((err) => res.status(400).json({err}));
 };

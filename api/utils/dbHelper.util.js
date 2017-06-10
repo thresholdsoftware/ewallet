@@ -1,32 +1,32 @@
 /* global TransactionFee*/
-const transactionTypes = require('../../config/transaction').transactionTypes;
+const {transactionTypes} = require('../../config/transaction');
+
+const generateCalculateBalanceSP = () => {
+  const createSP = `
+  CREATE PROCEDURE calculateBalance (IN accountId INT, OUT bal BIGINT)
+  SELECT (total_credit - total_debit) into bal from
+  ((SELECT ifnull(SUM(total_amount),0) total_debit,from_account from ewallet.transaction where from_account=accountId) lost,
+  (SELECT ifnull(SUM(amount),0) total_credit,to_account from ewallet.transaction where to_account=accountId) gained);
+  `;
+  return new Promise((resolve, reject) => {
+    Balance.query(createSP, (err, data) => {
+      if (err) {
+        return reject(err);
+      }
+      return resolve(data);
+    });
+  });
+};
 
 const generateTrigger = () => new Promise((resolve, reject) => {
   Balance.query(`
       CREATE TRIGGER UpdateBalanceTrigger after INSERT ON transaction
        FOR EACH ROW
        BEGIN
-           IF new.transaction_type="CREDIT" AND NEW.from_account != 0 THEN
-              signal sqlstate '45001' set message_text = "from account cannot be specified in the credit type transaction";
-           END IF;
-
-           IF new.transaction_type="WALLET" AND NEW.from_account is  NULL THEN
-              signal sqlstate '45001' set message_text = "from account attribute has to be specified in the wallet transaction";
-           END IF;
-
-           IF (select balance from balance where account=NEW.from_account)<NEW.amount AND NEW.transaction_type="WALLET" THEN
-              signal sqlstate '45002' set message_text = "Insufficient Balance";
-           END IF;
-
-           IF new.transaction_type = "WALLET" THEN
-            update balance set balance = IFNULL(((select SUM(finalAmount) from ewallet.transaction where to_account=NEW.to_account)-IFNULL((select SUM(finalAmount) from ewallet.transaction where from_account=NEW.to_account ),0)),NEW.amount) where account = NEW.to_account;
-           END If;
-
-           IF new.transaction_type  = "CREDIT" THEN
-             update balance set balance = IFNULL(((select SUM(amount) from ewallet.transaction where to_account=NEW.to_account)-IFNULL((select SUM(amount) from ewallet.transaction where from_account=NEW.to_account ),0)),NEW.amount) where account = NEW.to_account;
-           END IF;
-
-           update balance set balance = IFNULL(((select SUM(amount) from ewallet.transaction where to_account=NEW.from_account)-IFNULL((select SUM(amount) from ewallet.transaction where from_account=NEW.from_account),0)),0) where account = NEW.from_account;
+        call calculateBalance(NEW.to_account,@to_acc_balance);
+        call calculateBalance(NEW.from_account,@from_acc_balance);
+        update balance set balance = @from_acc_balance where account = NEW.from_account;
+        update balance set balance = @to_acc_balance where account = NEW.to_account;
         END
     `, (err, records) => {
     if (err) {
@@ -54,7 +54,40 @@ const generateTransactionFeeEnteries = () => {
   ]);
 };
 
+const generateBankAccount = () => {
+  const phone = 10000, countryCode = '+232', password = 'qwerty', name = 'bank manager', email = 'yolo@yolo.com';
+  return Account.findOne({phone}).populate('balanceAccount').then((adminacc) => {
+    if (!adminacc) {
+      return Account.create({phone, password, countryCode}).
+        then((acc) => UserProfile.create({name, email, account: acc.id, userType: 'BANK_ADMIN'})).
+        then((uprofile) => Balance.create({account: uprofile.account, balance: 30000})).
+        then((balance) => Account.findOne({id: balance.account}).populateAll());
+    }
+    return adminacc;
+  });
+};
+
+const pQuery = (sql) => {
+  const command = sql;
+  return new Promise((resolve, reject) => {
+    Balance.query(command, (err, data) => {
+      if (err) {
+        return reject(err);
+      }
+      return resolve(data);
+    });
+  });
+};
+
+const cleanupProcedures = () => Promise.all([
+  pQuery('DROP PROCEDURE IF EXISTS calculateBalance'),
+  pQuery('DROP TRIGGER IF EXISTS UpdateBalanceTrigger')
+]);
+
 module.exports = {
   generateTrigger,
-  generateTransactionFeeEnteries
+  generateTransactionFeeEnteries,
+  generateBankAccount,
+  generateCalculateBalanceSP,
+  cleanupProcedures
 };
