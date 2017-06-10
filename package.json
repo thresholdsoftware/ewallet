@@ -40,7 +40,6 @@
     "npm": "3.8.6"
   },
   "pre-push": [
-    "test",
     "lint"
   ],
   "scripts": {
