@@ -1,10 +1,10 @@
 /* globals sails*/
-import TwillioAPI from '../utils/TwillioUtils';
 import _ from 'lodash';
+import TwillioAPI from '../utils/TwillioUtils';
 
 const sendVerificationMessage = (req, res) => {
   const reqBody = _.assign({}, req.body);
-  var responseMessage = {};
+  const responseMessage = {};
 
   TwillioAPI.sendMessage(reqBody).then(() => {
     responseMessage.status = 'SUCCESS';

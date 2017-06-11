@@ -25,7 +25,7 @@ module.exports = {
                     'prepend': true,
                     'level': 'info',
                     'json':false
-                    
+
                 })
             ]
         })

@@ -4,57 +4,30 @@
  * @description :: User model for managing user profile
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
-import bcrypt from 'bcryptjs';
 
-import {setup} from '../services/Logger';
-
-const logger = setup('User');
-
-const removePassword = (obj) => {
-  let tempObj = obj; //eslint-disable-line
-  delete tempObj.password;
-  return tempObj;
-};
-
-const hashPassword = (ac, cb) => {
-  const account = ac;
-  return new Promise((resolve, reject) => {
-    bcrypt.genSalt(7, (err, salt) => {
-      bcrypt.hash(account.password, salt, (error, hash) => {
-        if (error) {
-          logger.error(error);
-          reject(error);
-          cb(error);
-        } else {
-          account.password = hash;
-          resolve(account);
-          cb();
-        }
-      });
-    });
-  });
-};
+import {removePassword, hashPassword} from '../utils/transformer.util';
 
 module.exports = {
-  testExports: {
-    removePassword,
-    hashPassword
-  },
   attributes: {
     phone: {
-      type: 'string',
+      columnName: 'phone',
+      type: 'integer',
+      size: 64,
       unique: true,
       required: true
     },
-    country_code:{
-      type:'string'
+    countryCode: {
+      columnName: 'country_code',
+      type: 'string'
     },
     password: {
+      columnName: 'password',
       type: 'string',
       minLength: 6,
       required: true
     },
     status: {
+      columnName: 'status',
       type: 'string',
       enum: [
         'active', 'inactive'
@@ -62,28 +35,27 @@ module.exports = {
       defaultsTo: 'active'
     },
     balanceAccount: {
+      columnName: 'balance',
       model: 'Balance',
       unique: true
     },
-    userprofile: {
+    userProfile: {
+      columnName: 'user_profile',
       model: 'UserProfile',
       unique: true
     },
-    bank: {
-      model: 'Bank'
-    },
     fromTransactions: {
       collection: 'Transaction',
-      via: 'from_account'
+      via: 'fromAccount'
     },
     toTransactions: {
       collection: 'Transaction',
-      via: 'to_account'
+      via: 'toAccount'
     },
     toJSON: function toJSON () {
       var obj = this.toObject(); //eslint-disable-line
       return removePassword(obj);
     }
   },
-  beforeCreate: (ac, cb) => hashPassword(ac, cb)
+  beforeCreate: (account, callback) => hashPassword(account, callback)
 };

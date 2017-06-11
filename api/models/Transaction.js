@@ -1,29 +1,40 @@
+import {transactionTypes} from '../../config/transaction';
+
 module.exports = {
   attributes: {
-    from_account: {
+    fromAccount: {
+      columnName: 'from_account',
       model: 'Account',
       required: true
     },
-    to_account: {
+    toAccount: {
+      columnName: 'to_account',
       model: 'Account',
       required: true
     },
-    transaction_type: {
+    transactionType: {
+      columnName: 'transaction_type',
       type: 'string',
-      enum: [
-        'CREDIT', 'WALLET'
-      ],
+      enum: transactionTypes,
       required: true
     },
     amount: {
+      columnName: 'amount',
       type: 'integer',
       required: true
     },
-    metadata: {
-      type: 'string',
+    fee: {
+      columnName: 'transaction_fee',
+      type: 'float',
       required: true
     },
-    finalAmount: {
+    totalAmount: {
+      columnName: 'total_amount',
+      type: 'float',
+      required: true
+    },
+    note: {
+      columnName: 'note',
       type: 'string'
     }
   }

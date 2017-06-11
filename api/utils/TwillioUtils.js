@@ -28,7 +28,7 @@ const get = (url, hdrs) => {
 };
 
 const fetchData = (url, config) => {
-  console.log(url, config.method);
+  console.log(url, config.method); // eslint-disable-line
   return rp(url, config).then((r) => r
      ).catch((error) => {
        throw error;

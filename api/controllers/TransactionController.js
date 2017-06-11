@@ -1,128 +1,108 @@
-/* globals sails, TransactionFee*/
-const transact = (req, res) => {
-  const toPhone = req.body.to_phone;
-  const amount = parseFloat(req.body.amount);
-  var fromName = '';
-  var finalAmount;
-  UserProfile.findOne({id: req.user.userprofile}).then((fromProf) => {
-    fromName = fromProf;
-  });
+/* globals , TransactionFee*/
+import result from 'lodash/result';
+import {getTransferType, getTotalAmount} from '../utils/transformer.util';
 
-  TransactionFee.findOne({transactionType: 'WALLET'}).then((tf) => {
-    var fee = 0;
-    fee = tf.transactionFee * amount / 100;
-    finalAmount = amount - fee;
-    sails.log.info('final Amount to transfer === ');
-    sails.log.info(finalAmount);
-  });
-
-  return Account.findOne({phone: toPhone}).populate('userprofile').then((toAcc) => {
-    if (!toAcc) {
-      throw new Error('Destination Account doesnt exist!');
+const _generateTransactionInfo = (fromUserPhone, toUserPhone, transferAmount) => {
+  const fromPhone = parseInt(fromUserPhone) || null;
+  const toPhone = parseInt(toUserPhone) || null;
+  const amount = parseInt(transferAmount) || null;
+  if (!amount) {
+    throw {message: 'Invalid amount'};
+  }
+  return Account.find({phone: [fromPhone, toPhone]}).populate('userProfile').
+  then(([fromAccount, toAccount]) => {
+    if (!fromAccount || !toAccount) {
+      throw {message: 'Phone number not registerd'};
     }
-    if (!amount || amount === 0) {
-      throw new Error('Invalid amount !');
-    }
-    return Transaction.create({from_account: req.user.id, to_account: toAcc.id, transaction_type: 'WALLET', finalAmount: finalAmount, amount, metadata: `{"from_name": \"${fromName.name}\" ,  "to_name": \"${toAcc.userprofile.name}\"}`});
-  }).then((t) => {
-    res.status(200).json(t);
-  }, (err) => {
-    sails.log.error(err);
-    res.status(400).json({
-      err: err.message || err
+    const transactionType = getTransferType(fromAccount, toAccount);
+    return TransactionFee.findOne({transactionType}).then((transactionFee) => {
+      if (!transactionFee) {
+        throw {message: 'Unsupported Transaction type', transactionType};
+      }
+      const totalAmount = getTotalAmount(amount, transactionFee.fee);
+      return {fromAccount, toAccount, transactionType, amount, fee: transactionFee.fee, totalAmount};
     });
   });
+};
+
+const transact = (req, res) => {
+  const fromPhone = req.user.phone;
+  const toPhone = result(req, 'body.toPhone');
+  const amount = result(req, 'body.amount');
+  return _generateTransactionInfo(fromPhone, toPhone, amount).
+  then((transactionInfo) => {
+    const {fromAccount, toAccount, transactionType, amount, fee, totalAmount} = transactionInfo;
+
+    return Transaction.create({fromAccount: fromAccount.id,
+      fee, toAccount: toAccount.id, transactionType, amount, totalAmount});
+  }).
+  then((transaction) => res.status(200).json(transaction)).
+  catch((err) => res.status(400).json(err));
+};
+
+const transactionInfo = (req, res) => {
+  const fromPhone = req.user.phone;
+  const toPhone = result(req, 'body.toPhone');
+  const amount = result(req, 'body.amount');
+  return _generateTransactionInfo(fromPhone, toPhone, amount).
+  then((transactionInfo) => res.status(200).json(transactionInfo)).
+  catch((err) => res.status(400).json(err));
 };
 
 const testCreditTransaction = (req, res) => {
-  const t = {
-    from_account: 0,
-    to_account: req.user.id,
-    transaction_type: 'CREDIT',
-    amount: req.body.amount,
-    metadata: 'From Bank Account',
-    finalAmount: req.body.amount
-  };
-  return Transaction.create(t).then((u) => {
-    res.status(200).json(u);
-  }, (err) => {
-    res.status(400).json({
-      err: err.message || err
-    });
-  });
+  UserProfile.findOne({userType: 'BANK_ADMIN'}).then((bankUser) => {
+    if (!bankUser) {
+      throw {message: 'No Bank User in the system'};
+    }
+    const amount = result(req, 'body.amount');
+    const fee = 0;
+    const t = {
+      fromAccount: bankUser.account,
+      toAccount: req.user.id,
+      transactionType: 'BANK_TO_WALLET',
+      note: 'From Bank Account',
+      amount,
+      fee,
+      totalAmount: getTotalAmount(amount, fee)
+    };
+    return Transaction.create(t);
+  }).
+  then((u) => res.status(200).json(u)).
+  catch((err) => res.status(400).json({err}));
 };
 
 
-const transactionInfo = (req, res) => {
-  const toPhone = req.body.to_phone;
-  const amount = parseFloat(req.body.amount);
-  var fromName='';
-  const transactionFee = 0;
-  var finalAmount;
-  var responseMessage = {};
-  // UserProfile.findOne({id:req.user.userprofile}).then((fromProf) =>{
-  //       fromName=fromProf;
-  //   });
-
-  TransactionFee.findOne({transactionType:'WALLET'}).then((tf)=>{
-      var fee = 0;
-      
-      fee = tf.transactionFee*amount/100; 
-      finalAmount = amount-fee;
-      responseMessage.finalAmount = finalAmount;
-      
-  })
-
-  return Account.findOne({phone: toPhone}).populate('userprofile').then((toAcc) => {
-    if (!toAcc) {
-      throw new Error('Destination Account doesnt exist!');
-    }
-    if (!amount || amount === 0) {
-      throw new Error('Invalid amount !');
-    }
-    responseMessage.destinationAcc = toAcc;
-   
-  }).then((t) => {
-    console.log("logging ehre ");
-
-    
-    console.log(responseMessage);
-   return res.status(200).json(responseMessage);
-  }, (err) => {
-    console.log(err);
-    return res.status(400).json({
-      err: err.message || err
-    });
-  });
+const _transactionFilterCondition = (account, typeOfTransaction) => {
+  // here type of transaction is DEBIT, CREDIT or ALL
+  switch (typeOfTransaction) {
+  case 'DEBIT': return {fromAccount: account};
+  case 'CREDIT': return {toAccount: account};
+  default: return {or: [{fromAccount: account}, {toAccount: account}]};
+  }
 };
 
 const getTransactions = (req, res) => {
   const defaultDate = new Date();
-  defaultDate.setDate(defaultDate.getDate() - 1);
-  const fromDate = new Date(req.query.from_date || defaultDate);
-  const toDate = new Date(req.query.to_date || Date.now());
-  const account = req.user.id;
-  Transaction.find({
+  defaultDate.setDate(defaultDate.getDate() - 31); // one month approx
+  const fromDate = new Date(req.query.fromDate || defaultDate);
+  const toDate = new Date(req.query.toDate || Date.now());
+  const account = req.user.id || null;
+  const page = req.query.page || 1;
+  const type = req.query.type || 'ALL';
+  return Transaction.find({
     where: {
-      or: [
-        {
-          from_account: account
-        }, {
-          to_account: account
-        }
-      ],
-      createdAt: {
-        '>=': fromDate,
-        '<=': toDate
-      }
+      ..._transactionFilterCondition(account, type),
+      createdAt: {'>=': fromDate, '<=': toDate}
     },
     sort: 'createdAt DESC'
-  }).populate('from_account').populate('to_account').then((u) => res.status(200).json(u)).catch((err) => res.status(500).json(err));
+  }).populate('fromAccount').populate('toAccount').paginate({page, limit: 10}).
+  then((u) => res.status(200).json(u)).
+  catch((err) => res.status(500).json(err));
 };
 
 module.exports = {
   transact,
+  transactionInfo,
   getTransactions,
-  testCreditTransaction,
-  transactionInfo
+  testCreditTransaction
 };
