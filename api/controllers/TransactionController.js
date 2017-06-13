@@ -9,8 +9,10 @@ const _generateTransactionInfo = (fromUserPhone, toUserPhone, transferAmount) =>
   if (!amount) {
     throw {message: 'Invalid amount'};
   }
-  return Account.find({phone: [fromPhone, toPhone]}).populate('userProfile').
-  then(([fromAccount, toAccount]) => {
+  
+ 
+  return Account.findOne({phone: fromPhone}).populate('userProfile').populate('balanceAccount').then((fromAccount) => Account.findOne({phone: toPhone}).populate('userProfile').populate('balanceAccount').
+  then((toAccount) => {
     if (!fromAccount || !toAccount) {
       throw {message: 'Phone number not registerd'};
     }
@@ -22,7 +24,8 @@ const _generateTransactionInfo = (fromUserPhone, toUserPhone, transferAmount) =>
       const totalAmount = getTotalAmount(amount, transactionFee.fee);
       return {fromAccount, toAccount, transactionType, amount, fee: transactionFee.fee, totalAmount};
     });
-  });
+  }));
+ 
 };
 
 const transact = (req, res) => {
@@ -32,6 +35,9 @@ const transact = (req, res) => {
   return _generateTransactionInfo(fromPhone, toPhone, amount).
   then((transactionInfo) => {
     const {fromAccount, toAccount, transactionType, amount, fee, totalAmount} = transactionInfo;
+    if (fromAccount.balanceAccount.balance < amount && transactionType === 'WALLET_TO_WALLET') {
+      return res.status(400).json({'message': 'Insufficient Balance'});
+    }   
 
     return Transaction.create({fromAccount: fromAccount.id,
       fee, toAccount: toAccount.id, transactionType, amount, totalAmount});
