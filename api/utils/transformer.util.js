@@ -33,9 +33,9 @@ export const hashUpdatePassword = (ac, cb) => {
           reject(error);
           cb();
         } else {
-          account.password = hash;
-          resolve(account);
-          cb(account);
+          newPass.password = hash;
+          resolve(newPass);
+          cb(newPass);
         }
       });
     });
