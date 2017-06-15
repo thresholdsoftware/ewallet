@@ -55,6 +55,7 @@ module.exports.routes = {
   'post /deactivate': 'UserController.deactivateAccount',
   'post /transact': 'TransactionController.transact',
   'post /test-credit': 'TransactionController.testCreditTransaction',
+  'get /getAllTransactions' : 'TransactionController.getAllTransactions',
 
   'get /test': 'TestController.getTest',
   'post /test': 'TestController.postTest',

@@ -106,9 +106,28 @@ const getTransactions = (req, res) => {
   catch((err) => res.status(500).json(err));
 };
 
+const getAllTransactions = (req, res) => {
+  const defaultDate = new Date();
+  defaultDate.setDate(defaultDate.getDate() - 31); // one month approx
+  const fromDate = new Date(req.query.fromDate || defaultDate);
+  const toDate = new Date(req.query.toDate || Date.now());
+  const page = req.query.page || 1;
+  const type = req.query.type || 'ALL';
+  return Transaction.find({
+    where: {
+      createdAt: {'>=': fromDate, '<=': toDate}
+    },
+    sort: 'createdAt DESC'
+  }).populate('fromAccount').populate('toAccount').paginate({page, limit: 10}).
+  then((u) => res.status(200).json(u)).
+  catch((err) => res.status(500).json(err));
+};
+
+
 module.exports = {
   transact,
   transactionInfo,
   getTransactions,
-  testCreditTransaction
+  testCreditTransaction,
+  getAllTransactions
 };
