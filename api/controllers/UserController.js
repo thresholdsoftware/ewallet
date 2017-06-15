@@ -1,3 +1,5 @@
+import {hashUpdatePassword} from '../utils/transformer.util';
+
 const signup = (req, res) => {
   const {phone, countryCode, password, name, email} = req.body;
   return Account.create({phone, password, countryCode}).
@@ -34,13 +36,21 @@ const updateUserProfile = (req, res) => {
   catch((err) => res.status(500).json(err));
 };
 
-const passwordReset = (req, res) => Account.update({id: req.user.id}, req.body.newPassword).
-then((u) => res.status(200).json(u)).
-catch((err) => res.status(500).json(err));
+const passwordReset = (req, res) => hashUpdatePassword(req.body, function (pass, err) {
+  if (err) {
+    return res.status(500).json(err);
+  }
+  return Account.update({id: req.user.id}, req.body).
+ then((up) => res.status(200).json(up)).
+ catch((err) => res.status(500).json(err));
+});
+
+
 
 const deactivateAccount = (req, res) => Account.update({id: req.user.id}, {status: 'inactive'}).
 then((u) => res.status(200).json(u)).
 catch((err) => res.status(500).json(err));
+
 
 module.exports = {
   signup,

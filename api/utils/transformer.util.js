@@ -13,7 +13,7 @@ export const hashPassword = (ac, cb) => {
       bcrypt.hash(account.password, salt, (error, hash) => {
         if (error) {
           reject(error);
-          cb(error);
+          cb();
         } else {
           account.password = hash;
           resolve(account);
@@ -23,6 +23,26 @@ export const hashPassword = (ac, cb) => {
     });
   });
 };
+
+export const hashUpdatePassword = (ac, cb) => {
+  const newPass = ac;
+  return new Promise((resolve, reject) => {
+    bcrypt.genSalt(7, (err, salt) => {
+      bcrypt.hash(newPass.password, salt, (error, hash) => {
+        if (error) {
+          reject(error);
+          cb();
+        } else {
+          account.password = hash;
+          resolve(account);
+          cb(account);
+        }
+      });
+    });
+  });
+};
+
+
 
 export const getTransferType = (fromAccount, toAccount) => 'WALLET_TO_WALLET'; //eslint-disable-line
 
