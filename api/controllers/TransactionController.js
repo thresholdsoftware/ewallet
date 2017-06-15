@@ -106,11 +106,11 @@ const getTransactions = (req, res) => {
   catch((err) => res.status(500).json(err));
 };
 
-const getTransactionsCount = (req,res) => {
-  return Transaction.count().then((totalTransactions) => {
-      res.status(200).json({totalTransactions:totalTransactions});
-  }).catch((err)=> console.log(error));
-}
+const getTransactionsCount = (req, res) => Transaction.count().then((totalTransactions) => {
+  res.status(200).json({totalTransactions: totalTransactions});
+}).catch((err) => {
+  res.status(500).json(err);
+});
 
 const getAllTransactions = (req, res) => {
   const defaultDate = new Date();
