@@ -106,6 +106,12 @@ const getTransactions = (req, res) => {
   catch((err) => res.status(500).json(err));
 };
 
+const getTransactionsCount = (req,res) => {
+  return Transaction.count().then((totalTransactions) => {
+      res.status(200).json({totalTransactions:totalTransactions});
+  }).catch((err)=> console.log(error));
+}
+
 const getAllTransactions = (req, res) => {
   const defaultDate = new Date();
   defaultDate.setDate(defaultDate.getDate() - 31); // one month approx
@@ -128,5 +134,6 @@ module.exports = {
   transactionInfo,
   getTransactions,
   testCreditTransaction,
-  getAllTransactions
+  getAllTransactions,
+  getTransactionsCount
 };

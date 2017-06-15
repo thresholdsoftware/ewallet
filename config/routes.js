@@ -56,6 +56,7 @@ module.exports.routes = {
   'post /transact': 'TransactionController.transact',
   'post /test-credit': 'TransactionController.testCreditTransaction',
   'get /getAllTransactions' : 'TransactionController.getAllTransactions',
+  'get /getTransactionsCount' : 'TransactionController.getTransactionsCount',
 
   'get /test': 'TestController.getTest',
   'post /test': 'TestController.postTest',
