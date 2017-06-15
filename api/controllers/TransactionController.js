@@ -112,7 +112,6 @@ const getAllTransactions = (req, res) => {
   const fromDate = new Date(req.query.fromDate || defaultDate);
   const toDate = new Date(req.query.toDate || Date.now());
   const page = req.query.page || 1;
-  const type = req.query.type || 'ALL';
   return Transaction.find({
     where: {
       createdAt: {'>=': fromDate, '<=': toDate}
