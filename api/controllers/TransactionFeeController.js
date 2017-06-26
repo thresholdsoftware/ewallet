@@ -7,9 +7,9 @@ const getTransactionFees = (req, res) => {
 };
 
 const updateTransactionFee = (req, res) => {
-  const {transactionFee} = req.body;
+  const {fee} = req.body;
   const {transactionType} = req.params;
-  return TransactionFee.update({transactionType}, {transactionFee}).
+  return TransactionFee.update({transactionType}, {fee}).
   then((sc) => res.status(200).json(sc)).
   catch((err) => res.status(500).json(err));
 };
