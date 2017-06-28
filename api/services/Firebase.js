@@ -1,3 +1,4 @@
+/* global sails*/
 import * as admin from 'firebase-admin';
 import serviceAccount from '../../config/firebase.key.json';
 
@@ -23,9 +24,9 @@ export const message = (message = payload, token = registrationTokens) => {
     then(function (response) {
       // See the MessagingDevicesResponse reference documentation for
       // the contents of response.
-      console.log('Successfully sent message:', response);
+      sails.log.debug('Successfully sent message:', response);
     }).
     catch(function (error) {
-      console.log('Error sending message:', error);
+      sails.log.debug('Error sending message:', error);
     });
 };
