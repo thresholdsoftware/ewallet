@@ -5,8 +5,8 @@ const generateCalculateBalanceSP = () => {
   const createSP = `
   CREATE PROCEDURE calculateBalance (IN accountId INT, OUT bal BIGINT)
   SELECT (total_credit - total_debit) into bal from
-  ((SELECT ifnull(SUM(total_amount),0) total_debit,from_account from ewallet.transaction where from_account=accountId) lost,
-  (SELECT ifnull(SUM(amount),0) total_credit,to_account from ewallet.transaction where to_account=accountId) gained);
+  ((SELECT ifnull(SUM(total_amount),0) total_debit,from_account from transaction where from_account=accountId) lost,
+  (SELECT ifnull(SUM(amount),0) total_credit,to_account from transaction where to_account=accountId) gained);
   `;
   return new Promise((resolve, reject) => {
     Balance.query(createSP, (err, data) => {
