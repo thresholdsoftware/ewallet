@@ -1,5 +1,6 @@
 /* global sails*/
 import * as admin from 'firebase-admin';
+import map from 'lodash/map';
 import serviceAccount from '../../config/firebase.key.json';
 
 admin.initializeApp({
@@ -7,7 +8,7 @@ admin.initializeApp({
   databaseURL: `https://${serviceAccount.project_id}.firebaseio.com`
 });
 
-export const createNotificationEntity = ({title, body, icon, ...extraPayload}) => ({
+const _getNotificationEntity = ({title, body, icon, ...extraPayload}) => ({
   notification: {
     title,
     body,
@@ -16,14 +17,32 @@ export const createNotificationEntity = ({title, body, icon, ...extraPayload}) =
   }
 });
 
+const notificationOptions = {
+  priority: 'high',
+  timeToLive: 60 * 60 * 24
+};
+
 export const sendNotificationToUser = (accountId, message = {}) => {
-  const notificationEntity = message;
-  const users = tokens;
-  return admin.messaging().sendToDevice(users, notificationEntity).
-    then(function (response) {
-      sails.log.debug('Successfully sent message:', response);
+  const notification = _getNotificationEntity(message);
+  return Account.findOne({id: accountId}).populate('devices').
+    then((account) => {
+      const notificationTokens = map(account.devices, 'notificationId');
+      return admin.messaging().sendToDevice(notificationTokens, notification, notificationOptions);
     }).
-    catch(function (error) {
-      sails.log.debug('Error sending message:', error);
-    });
+    then((response) => sails.log.debug('Successfully sent message:', response)).
+    catch((error) => sails.log.debug('Error sending message:', error));
+};
+
+export const sendNotificationToDevice = (deviceNotificationToken, message = {}) => {
+  const notification = _getNotificationEntity(message);
+  return admin.messaging().sendToDevice(deviceNotificationToken, notification, notificationOptions).
+  then((response) => sails.log.debug('Successfully sent message:', response)).
+  catch((error) => sails.log.debug('Error sending message:', error));
+};
+
+export const sendNotificationToAllDevices = (message = {}) => {
+  const notification = _getNotificationEntity(message);
+  return admin.messaging().sendToCondition('*', notification, notificationOptions).
+  then((response) => sails.log.debug('Successfully sent message:', response)).
+  catch((error) => sails.log.debug('Error sending message:', error));
 };

@@ -1,4 +1,5 @@
-import {hashUpdatePassword} from '../utils/transformer.util';
+import {hashPassword} from '../utils/transformer.util';
+import TwillioAPI from '../utils/TwillioUtils';
 
 const signup = (req, res) => {
   const {phone, countryCode, password, name, email} = req.body;
@@ -26,16 +27,41 @@ const updateUserProfile = (req, res) => {
   catch((err) => res.status(500).json(err));
 };
 
-const passwordReset = (req, res) => hashUpdatePassword(req.body, function (pass, err) {
-  if (err) {
-    return res.status(500).json(err);
-  }
-  return Account.update({id: req.user.id}, req.body).
- then((up) => res.status(200).json(up)).
- catch((err) => res.status(500).json(err));
-});
 
+const sendPasswordResetVerificationMessage = (req, res) => {
+  const {phone} = req.body;
+  return Account.findOne({phone}).
+  then((acc) => TwillioAPI.sendMessage(acc.phone, acc.countryCode)).
+  then((success) => res.status(200).json({status: 'SUCCESS', success})).
+  catch((error) => {
+    sails.log.error(error);
+    return res.status(500).json(error);
+  });
+};
 
+const passwordReset = (req, res) => {
+  const {phone, code, password} = req.body;
+  return Account.findOne({phone}).
+  then((acc) => TwillioAPI.verifyPasscode(acc.phone, acc.countryCode, code)).
+  then(() => hashPassword({password})).
+  then(({hashedPassword}) => Account.update({phone}, {password: hashedPassword})).
+  then((updatedAccount) => res.status(200).json(updatedAccount)).
+  catch((err) => res.status(500).json(err));
+};
+
+const changePassword = (req, res) => {
+  const {newPassword, password} = req.body;
+  return hashPassword(password).
+  then((hashedOldPassword) => {
+    if (req.user.password !== hashedOldPassword) {
+      throw new Error('Incorrect current password');
+    }
+    return hashPassword(newPassword);
+  }).
+  then((newHashedPassword) => Account.update({id: req.user.id}, {password: newHashedPassword})).
+  then((acc) => res.status(200).json(acc)).
+  catch((err) => res.status(500).json(err));
+};
 
 const deactivateAccount = (req, res) => Account.update({id: req.user.id}, {status: 'inactive'}).
 then((u) => res.status(200).json(u)).
@@ -46,6 +72,8 @@ module.exports = {
   signup,
   getUser,
   updateUserProfile,
+  sendPasswordResetVerificationMessage,
   passwordReset,
-  deactivateAccount
+  deactivateAccount,
+  changePassword
 };
