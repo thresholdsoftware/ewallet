@@ -1,6 +1,7 @@
 /* globals sails*/
 import TwillioAPI from '../utils/TwillioUtils';
 import find from 'lodash/find';
+import {getDeviceFromDb} from '../utils/transformer.util';
 
 const sendVerificationMessage = (req, res) => {
   const {phone, countryCode} = req.user;
@@ -12,19 +13,11 @@ const sendVerificationMessage = (req, res) => {
   });
 };
 
-const _getDevice = (devices, deviceId, deviceName, accountId) => {
-  const found = find(devices, {deviceId});
-  if (!found) {
-    return Device.create({deviceId, deviceName, account: accountId});
-  }
-  return Promise.resolve(found);
-};
-
 const verifyDevice = (req, res) => {
   const {code, deviceId, deviceName} = req.body;
   const {phone, countryCode, id} = req.user;
   return TwillioAPI.verifyPasscode(phone, countryCode, code).
-  then(() => _getDevice(req.user.devices, deviceId, deviceName, id)).
+  then(() => getDeviceFromDb(req.user.devices, deviceId, deviceName, id)).
   then((foundDevice) => Device.update({id: foundDevice.id}, {verified: true})).
   then((verifiedDevice) => res.status(200).json(verifiedDevice)).
   catch((err) => {
@@ -38,7 +31,7 @@ const removeVerifiedDevice = (req, res) => {
   const registeredDevices = req.user.devices;
   const found = find(registeredDevices, {deviceId});
   if (!found) {
-    return res.status(401).json({message: 'Device not found!', deviceId, code: 'DNF'});
+    return res.status(401).json({message: 'Device not found!', deviceId, error: 'DEVICE_NOT_FOUND'});
   }
   return Device.destroy({id: found.id}).
   then((removedDevice) => res.status(200).json(removedDevice)).

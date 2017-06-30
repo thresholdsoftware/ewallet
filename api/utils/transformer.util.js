@@ -8,6 +8,18 @@ export const removePassword = (user) => {
   return passwordRemoved;
 };
 
+export const compareHashedPassword = (unencryptedPass, encryptedStorePass) => {
+  const p = new Promise((resolve, reject) => {
+    bcrypt.compare(unencryptedPass, encryptedStorePass, function (err, result) {
+      if (!result) {
+        return reject(false);
+      }
+      return resolve(true);
+    });
+  });
+  return p;
+};
+
 export const hashPassword = (ac, next = noop) => {
   const account = ac;
   return new Promise((resolve, reject) => {
@@ -39,6 +51,15 @@ export const checkIfVerifiedDevice = (devices = [], deviceId = null) => {
     if (foundDevice && foundDevice.verified) {
       return resolve(foundDevice);
     }
-    return reject({message: 'Device not Verified', deviceId, code: 'DNV'});
+    return reject({message: 'Device not Verified', deviceId, error: 'DEVICE_NOT_VERIFIED'});
   });
+};
+
+
+export const getDeviceFromDb = (devices, deviceId, deviceName, accountId) => {
+  const found = find(devices, {deviceId});
+  if (!found) {
+    return Device.create({deviceId, deviceName, account: accountId});
+  }
+  return Promise.resolve(found);
 };

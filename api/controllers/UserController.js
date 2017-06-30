@@ -1,4 +1,4 @@
-import {hashPassword} from '../utils/transformer.util';
+import {hashPassword, compareHashedPassword, getDeviceFromDb} from '../utils/transformer.util';
 import TwillioAPI from '../utils/TwillioUtils';
 
 const signup = (req, res) => {
@@ -40,25 +40,29 @@ const sendPasswordResetVerificationMessage = (req, res) => {
 };
 
 const passwordReset = (req, res) => {
-  const {phone, code, password} = req.body;
-  return Account.findOne({phone}).
-  then((acc) => TwillioAPI.verifyPasscode(acc.phone, acc.countryCode, code)).
+  const {phone, code, password, deviceId, deviceName} = req.body;
+  let devices = [];
+  return Account.findOne({phone}).populate('devices').
+  then((acc) => {
+    TwillioAPI.verifyPasscode(acc.phone, acc.countryCode, code);
+    devices = acc.devices || [];
+  }).
   then(() => hashPassword({password})).
-  then(({hashedPassword}) => Account.update({phone}, {password: hashedPassword})).
-  then((updatedAccount) => res.status(200).json(updatedAccount)).
+  then(({password}) => Account.update({phone}, {password})).
+  then(([account]) => getDeviceFromDb(devices, deviceId, deviceName, account.id)).
+  then((foundDevice) => Device.update({id: foundDevice.id}, {verified: true})).
+  then(([updatedDevice]) => res.status(200).json(updatedDevice)).
   catch((err) => res.status(500).json(err));
 };
 
 const changePassword = (req, res) => {
   const {newPassword, password} = req.body;
-  return hashPassword(password).
-  then((hashedOldPassword) => {
-    if (req.user.password !== hashedOldPassword) {
-      throw new Error('Incorrect current password');
-    }
-    return hashPassword(newPassword);
+  return compareHashedPassword(password, req.user.password).
+  catch(() => {
+    throw {message: 'Incorrect current password'};
   }).
-  then((newHashedPassword) => Account.update({id: req.user.id}, {password: newHashedPassword})).
+  then(() => hashPassword({password: newPassword})).
+  then(({password}) => Account.update({id: req.user.id}, {password})).
   then((acc) => res.status(200).json(acc)).
   catch((err) => res.status(500).json(err));
 };
