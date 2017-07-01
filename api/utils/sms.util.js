@@ -11,7 +11,6 @@ const post = (url, requestBody, hdrs) => {
       'Content-Type': 'application/json'
     }, hdrs)
   };
-
   return fetchData(url, config);
 };
 
@@ -32,9 +31,9 @@ const fetchData = (url, config) => {
   return rp(url, config);
 };
 
-const sendMessage = (phone_number, country_code) => {
+const sendSmsOtp = (phone_number, country_code) => {
   if (sails.config.disableTwillio) {
-    console.log('Running in TWILLIO DISABLED MODE'); //eslint-disable-line
+    console.log('Running SEND in TWILLIO DISABLED MODE'); //eslint-disable-line
     return Promise.resolve({
       'carrier': 'Dummy',
       'is_cellphone': true,
@@ -48,9 +47,9 @@ const sendMessage = (phone_number, country_code) => {
   return post(twillioSendMessageUrl, {phone_number, country_code, via: 'sms'}, {'X-Authy-API-Key': authyKey});
 };
 
-const verifyPasscode = (phone_number, country_code, verification_code) => {
+const verifySmsOTP = (phone_number, country_code, verification_code) => {
   if (sails.config.disableTwillio) {
-    console.log('Running in TWILLIO DISABLED MODE'); //eslint-disable-line
+    console.log('Running VERIFY in TWILLIO DISABLED MODE'); //eslint-disable-line
     return Promise.resolve({
       'message': 'Verification code is correct.',
       'success': true
@@ -61,6 +60,6 @@ const verifyPasscode = (phone_number, country_code, verification_code) => {
 };
 
 module.exports = {
-  verifyPasscode,
-  sendMessage
+  verifySmsOTP,
+  sendSmsOtp
 };

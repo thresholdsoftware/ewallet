@@ -2,6 +2,7 @@
 import bcrypt from 'bcryptjs';
 import noop from 'lodash/noop';
 import find from 'lodash/find';
+import each from 'lodash/each';
 
 export const removePassword = (user) => {
   const {password, ...passwordRemoved} = user; //eslint-disable-line
@@ -55,11 +56,22 @@ export const checkIfVerifiedDevice = (devices = [], deviceId = null) => {
   });
 };
 
-
 export const getDeviceFromDb = (devices, deviceId, deviceName, accountId) => {
   const found = find(devices, {deviceId});
   if (!found) {
     return Device.create({deviceId, deviceName, account: accountId});
   }
   return Promise.resolve(found);
+};
+
+export const checkRequiredKeys = (entity = {}, requiredKeys = []) => {
+  const invalidAttributes = {};
+  each(requiredKeys, (eachKey) => {
+    const value = entity[eachKey];
+    if (!value && ![0, false].includes(value)) {
+      invalidAttributes[eachKey] = [{'value': value, 'message': 'Not a valid value'}];
+    }
+  });
+  return (Object.keys(invalidAttributes).length > 0) ? {'error': 'CUSTOM_VALIDATION', 'summary': 'Incomplete request',
+    'invalidAttributes': invalidAttributes} : null;
 };

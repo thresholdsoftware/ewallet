@@ -13,11 +13,11 @@ module.exports = {
     const {deviceId} = req.body;
     passport.authenticate('local', (err, user, info) => {
       if ((err) || (!user)) {
-        return res.status(401).json({message: info.message, user});
+        return res.status(400).json({message: info.message, user});
       }
       return req.logIn(user, (error) => {
         if (error) {
-          res.status(401).json(error);
+          res.status(400).json(error);
         }
         return checkIfVerifiedDevice(user.devices, deviceId).
         then(() => res.status(200).json({message: info.message, user})).

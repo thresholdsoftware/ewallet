@@ -1,13 +1,18 @@
-import {hashPassword, compareHashedPassword, getDeviceFromDb} from '../utils/transformer.util';
-import TwillioAPI from '../utils/TwillioUtils';
+import {hashPassword, compareHashedPassword, getDeviceFromDb, checkRequiredKeys} from '../utils/transformer.util';
+import SmsUtil from '../utils/sms.util';
 
 const signup = (req, res) => {
-  const {phone, countryCode, password, name, email} = req.body;
-  return Account.create({phone, password, countryCode}).
+  const {phone, countryCode, password, name, email, code, deviceId, deviceName} = req.body;
+  const errors = checkRequiredKeys(req.body, ['phone', 'countryCode', 'password', 'name', 'email', 'code', 'deviceId', 'deviceName']);
+  if (errors) {
+    return res.status(400).json(errors);
+  }
+  return SmsUtil.verifySmsOTP(phone, countryCode, code).
+  then(() => Account.create({phone, password, countryCode})).
   then((acc) => UserProfile.create({name, email, account: acc.id})).
   then((uprofile) => Balance.create({account: uprofile.account, balance: 0})).
-  then((balance) => Account.findOne({id: balance.account}).populateAll()).
-  then((account) => res.status(200).json(account)).
+  then((balance) => Device.create({deviceId, deviceName, account: balance.account, verified: true})).
+  then((device) => res.status(200).json(device)).
   catch((err) => res.status(400).json(err));
 };
 
@@ -31,7 +36,7 @@ const updateUserProfile = (req, res) => {
 const sendPasswordResetVerificationMessage = (req, res) => {
   const {phone} = req.body;
   return Account.findOne({phone}).
-  then((acc) => TwillioAPI.sendMessage(acc.phone, acc.countryCode)).
+  then((acc) => SmsUtil.sendSmsOtp(acc.phone, acc.countryCode)).
   then((success) => res.status(200).json({status: 'SUCCESS', success})).
   catch((error) => {
     sails.log.error(error);
@@ -44,7 +49,7 @@ const passwordReset = (req, res) => {
   let devices = [];
   return Account.findOne({phone}).populate('devices').
   then((acc) => {
-    TwillioAPI.verifyPasscode(acc.phone, acc.countryCode, code);
+    SmsUtil.verifySmsOTP(acc.phone, acc.countryCode, code);
     devices = acc.devices || [];
   }).
   then(() => hashPassword({password})).
