@@ -4,7 +4,7 @@ import find from 'lodash/find';
 import {getDeviceFromDb} from '../utils/transformer.util';
 
 const sendVerificationMessage = (req, res) => {
-  const {phone, countryCode} = req.user;
+  const {phone, countryCode} = req.body;
   return SmsUtil.sendSmsOtp(phone, countryCode).
   then((success) => res.status(200).json({status: 'SUCCESS', success})).
   catch((error) => {

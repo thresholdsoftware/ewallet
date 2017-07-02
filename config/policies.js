@@ -45,7 +45,7 @@ var policies = {
   'DeviceController':{
     'removeVerifiedDevice': ['isAuthenticated','isDeviceVerified'],
     'verifyDevice': ['isAuthenticated'],
-    'sendVerificationMessage': ['isAuthenticated']
+    'sendVerificationMessage': []
   }
   /***************************************************************************
   *                                                                          *
