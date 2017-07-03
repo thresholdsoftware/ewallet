@@ -40,7 +40,8 @@ var policies = {
     'useScratchCard': ['isAuthenticated','isDeviceVerified']
   },
   'TransactionController' : {
-    '*' : ['isAuthenticated','isDeviceVerified']
+    '*' : ['isAuthenticated','isDeviceVerified'],
+    'testCreditTransaction':['isAuthenticated']
   },
   'DeviceController':{
     'removeVerifiedDevice': ['isAuthenticated','isDeviceVerified'],

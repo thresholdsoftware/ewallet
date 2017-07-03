@@ -19,7 +19,7 @@ module.exports = {
         if (error) {
           res.status(400).json(error);
         }
-        return checkIfVerifiedDevice(user.devices, deviceId).
+        return checkIfVerifiedDevice(user, deviceId).
         then(() => res.status(200).json({message: info.message, user})).
         catch((err) => res.status(403).json(err));
       });

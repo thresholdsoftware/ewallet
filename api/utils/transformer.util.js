@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import noop from 'lodash/noop';
 import find from 'lodash/find';
 import each from 'lodash/each';
+import map from 'lodash/map';
 
 export const removePassword = (user) => {
   const {password, ...passwordRemoved} = user; //eslint-disable-line
@@ -46,13 +47,13 @@ export const getTotalAmount = (amount, feeRate) => {
   return amount + fee;
 };
 
-export const checkIfVerifiedDevice = (devices = [], deviceId = null) => {
-  const foundDevice = find(devices, {deviceId});
+export const checkIfVerifiedDevice = (user, deviceId = null, deviceName = null) => {
+  const foundDevice = find(user.devices, {deviceId});
   return new Promise((resolve, reject) => {
     if (foundDevice && foundDevice.verified) {
       return resolve(foundDevice);
     }
-    return reject({message: 'Device not Verified', deviceId, error: 'DEVICE_NOT_VERIFIED'});
+    return reject({message: 'Device not Verified', deviceId, deviceName, error: 'DEVICE_NOT_VERIFIED', phone: user.phone, countryCode: user.countryCode});
   });
 };
 
@@ -74,4 +75,25 @@ export const checkRequiredKeys = (entity = {}, requiredKeys = []) => {
   });
   return (Object.keys(invalidAttributes).length > 0) ? {'error': 'CUSTOM_VALIDATION', 'summary': 'Incomplete request',
     'invalidAttributes': invalidAttributes} : null;
+};
+
+export const transactionListMetaGenerator = (transactionList, ownAccountId) => {
+  const transformed = map(transactionList, (transactionItem) => {
+    const {fromAccount, toAccount, transactionType} = transactionItem;
+    switch (transactionType) {
+    case 'BANK_TO_WALLET': {
+      transactionItem.metadata = `Bank Transfer - BA:${fromAccount.phone} ${transactionItem.note || ''}`; break;
+    }
+    case 'WALLET_TO_WALLET': {
+      if (fromAccount.id === ownAccountId) {
+        transactionItem.metadata = `Transfer to ${toAccount.phone} ${transactionItem.note || ''}`; break;
+      } else {
+        transactionItem.metadata = `Transfer from (${fromAccount.phone}) ${transactionItem.note ||
+        ''}`; break;
+      }
+    }
+    }
+    return transactionItem;
+  });
+  return transformed;
 };

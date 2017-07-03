@@ -37,7 +37,7 @@ const sendSmsOtp = (phone_number, country_code) => {
     return Promise.resolve({
       'carrier': 'Dummy',
       'is_cellphone': true,
-      'message': `We have sent ${phone_number} a verification message`,
+      'message': `We have sent ${country_code} ${phone_number} a verification message`,
       'seconds_to_expire': 599,
       'uuid': '370650f0-3e9e-0135-ba71-0e690b363fd4',
       'success': true
