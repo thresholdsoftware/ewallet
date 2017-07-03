@@ -1,5 +1,6 @@
 /* globals , TransactionFee*/
 import result from 'lodash/result';
+import * as firebase from '../services/Firebase';
 import {getTransferType, getTotalAmount, transactionListMetaGenerator} from '../utils/transformer.util';
 
 const _generateTransactionInfo = (fromUserPhone, toUserPhone, transferAmount) => {
@@ -37,6 +38,13 @@ const transact = (req, res) => {
     }
     return Transaction.create({fromAccount: fromAccount.id,
       fee, toAccount: toAccount.id, transactionType, amount, totalAmount});
+  }).
+  then((transaction) => {
+    const toUserNotification = {title: 'Payment received!', body: `You received ${transaction.amount} from ${fromPhone}`};
+    const fromUserNotification = {title: 'Payment sent!', body: `You Paid ${transaction.amount} to ${toPhone}`};
+    firebase.sendNotificationToUser(transaction.toAccount, toUserNotification);
+    firebase.sendNotificationToUser(transaction.fromAccount, fromUserNotification);
+    return transaction;
   }).
   then((transaction) => res.status(200).json(transaction)).
   catch((err) => res.status(400).json(err));

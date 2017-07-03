@@ -4,6 +4,7 @@ import noop from 'lodash/noop';
 import find from 'lodash/find';
 import each from 'lodash/each';
 import map from 'lodash/map';
+import filter from 'lodash/filter';
 
 export const removePassword = (user) => {
   const {password, ...passwordRemoved} = user; //eslint-disable-line
@@ -96,4 +97,9 @@ export const transactionListMetaGenerator = (transactionList, ownAccountId) => {
     return transactionItem;
   });
   return transformed;
+};
+
+export const cleanArrayOfFalsy = (rawArray) => {
+  const filtered = filter(rawArray, (eachElement) => !!eachElement);
+  return filtered;
 };
