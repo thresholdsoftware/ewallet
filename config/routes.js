@@ -78,7 +78,8 @@ module.exports.routes = {
 
   'post /send-verification-message' : 'DeviceController.sendVerificationMessage',
   'post /verify-device' : 'DeviceController.verifyDevice',
-  'delete /device/:deviceId': 'DeviceController.removeVerifiedDevice'
+  'delete /device/:deviceId': 'DeviceController.removeVerifiedDevice',
+  'post /update-device-push-token': 'DeviceController.updateDevicePushToken'
 
   /* ***
   ***********************************************************************

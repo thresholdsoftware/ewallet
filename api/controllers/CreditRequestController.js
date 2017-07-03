@@ -22,9 +22,7 @@ const createCreditRequest = (req, res) => {
 
 const updateCreditRequest = (req, res) => {
   const reqBody = _.assign({}, req.body);
-
   const transactionId = req.params.transactionId;
-
   return CreditRequest.update({
     transactionId: transactionId
   }, {creditStatus: reqBody.creditStatus}).then((sc) => {
@@ -49,5 +47,4 @@ module.exports = {
   createCreditRequest,
   updateCreditRequest,
   getUserCreditRequest
-
 };

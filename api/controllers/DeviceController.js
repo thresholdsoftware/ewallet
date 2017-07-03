@@ -38,8 +38,22 @@ const removeVerifiedDevice = (req, res) => {
   catch((err) => res.status(500).json(err));
 };
 
+const updateDevicePushToken = (req, res) => {
+  const {notificationId, deviceId, deviceName} = req.body;
+  return getDeviceFromDb(req.user.devices, deviceId, deviceName, req.user.id).
+  then((currentDevice) => Device.update({id: currentDevice.id}, {notificationId})).
+  then((device) => {
+    if (device.length < 1) {
+      return res.status(404).json({message: 'Device not found!', deviceId, error: 'DEVICE_NOT_FOUND'});
+    }
+    return res.status(200).json(device);
+  }).
+  catch((err) => res.status(500).json(err));
+};
+
 module.exports = {
   sendVerificationMessage,
   verifyDevice,
-  removeVerifiedDevice
+  removeVerifiedDevice,
+  updateDevicePushToken
 };
