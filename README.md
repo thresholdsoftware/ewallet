@@ -158,3 +158,17 @@ Hence this needs to be handled just like `local.js` file.
 
 `firebase.key.json` can be got from firebase admin sdk portal or
 from here https://drive.google.com/drive/folders/0B9uw2xYXlszXbDN3Vm8yTmJJUnc
+
+
+## Services used
+
+- Firebase
+- AWS
+- github
+- Slack
+- Twillio
+
+
+## Tech stack
+- sails js
+- node js
