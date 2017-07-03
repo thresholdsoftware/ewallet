@@ -1,6 +1,7 @@
 /* globals , TransactionFee*/
 import result from 'lodash/result';
-import {getTransferType, getTotalAmount} from '../utils/transformer.util';
+import * as firebase from '../services/Firebase';
+import {getTransferType, getTotalAmount, transactionListMetaGenerator} from '../utils/transformer.util';
 
 const _generateTransactionInfo = (fromUserPhone, toUserPhone, transferAmount) => {
   const fromPhone = parseInt(fromUserPhone) || null;
@@ -9,8 +10,6 @@ const _generateTransactionInfo = (fromUserPhone, toUserPhone, transferAmount) =>
   if (!amount) {
     throw {message: 'Invalid amount'};
   }
-  
- 
   return Account.findOne({phone: fromPhone}).populate('userProfile').populate('balanceAccount').then((fromAccount) => Account.findOne({phone: toPhone}).populate('userProfile').populate('balanceAccount').
   then((toAccount) => {
     if (!fromAccount || !toAccount) {
@@ -25,7 +24,6 @@ const _generateTransactionInfo = (fromUserPhone, toUserPhone, transferAmount) =>
       return {fromAccount, toAccount, transactionType, amount, fee: transactionFee.fee, totalAmount};
     });
   }));
- 
 };
 
 const transact = (req, res) => {
@@ -37,10 +35,16 @@ const transact = (req, res) => {
     const {fromAccount, toAccount, transactionType, amount, fee, totalAmount} = transactionInfo;
     if (fromAccount.balanceAccount.balance < amount && transactionType === 'WALLET_TO_WALLET') {
       return res.status(400).json({'message': 'Insufficient Balance'});
-    }   
-
+    }
     return Transaction.create({fromAccount: fromAccount.id,
       fee, toAccount: toAccount.id, transactionType, amount, totalAmount});
+  }).
+  then((transaction) => {
+    const toUserNotification = {title: 'Payment received!', body: `You received ${transaction.amount} from ${fromPhone}`};
+    const fromUserNotification = {title: 'Payment sent!', body: `You Paid ${transaction.amount} to ${toPhone}`};
+    firebase.sendNotificationToUser(transaction.toAccount, toUserNotification);
+    firebase.sendNotificationToUser(transaction.fromAccount, fromUserNotification);
+    return transaction;
   }).
   then((transaction) => res.status(200).json(transaction)).
   catch((err) => res.status(400).json(err));
@@ -66,7 +70,7 @@ const testCreditTransaction = (req, res) => {
       fromAccount: bankUser.account,
       toAccount: req.user.id,
       transactionType: 'BANK_TO_WALLET',
-      note: 'From Bank Account',
+      note: '',
       amount,
       fee,
       totalAmount: getTotalAmount(amount, fee)
@@ -102,15 +106,14 @@ const getTransactions = (req, res) => {
     },
     sort: 'createdAt DESC'
   }).populate('fromAccount').populate('toAccount').paginate({page, limit: 10}).
-  then((u) => res.status(200).json(u)).
+
+  then((transactions) => res.status(200).json(transactionListMetaGenerator(transactions, req.user.id))).
   catch((err) => res.status(500).json(err));
 };
 
-const getTransactionsCount = (req, res) => Transaction.count().then((totalTransactions) => {
-  res.status(200).json({totalTransactions: totalTransactions});
-}).catch((err) => {
-  res.status(500).json(err);
-});
+const getTransactionsCount = (req, res) => Transaction.count().
+then((totalTransactions) => res.status(200).json({totalTransactions})).
+catch((err) => res.status(500).json(err));
 
 const getAllTransactions = (req, res) => {
   const defaultDate = new Date();
@@ -124,7 +127,7 @@ const getAllTransactions = (req, res) => {
     },
     sort: 'createdAt DESC'
   }).populate('fromAccount').populate('toAccount').paginate({page, limit: 10}).
-  then((u) => res.status(200).json(u)).
+  then((d) => res.status(200).json(d)).
   catch((err) => res.status(500).json(err));
 };
 

@@ -32,9 +32,6 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-  // '/': {
-  //   view: 'homepage'
-  // },
   'get /login': {
     view: 'login'
   },
@@ -48,27 +45,28 @@ module.exports.routes = {
 
   'post /signup': 'UserController.signup',
   'get /user': 'UserController.getUser',
-  'get /balance': 'BalanceController.getBalance',
-  'get /transactions': 'TransactionController.getTransactions',
   'post /profile': 'UserController.updateUserProfile',
-  'post /passwordreset': 'UserController.passwordReset',
+  'post /change-password': 'UserController.changePassword',
+  'post /send-password-reset-message':'UserController.sendPasswordResetVerificationMessage',
+  'post /password-reset': 'UserController.passwordReset',
   'post /deactivate': 'UserController.deactivateAccount',
+
+  'get /balance': 'BalanceController.getBalance',
+
+  'get /transactions': 'TransactionController.getTransactions',
+  'post /transactionInfo' : 'TransactionController.transactionInfo',
   'post /transact': 'TransactionController.transact',
   'post /test-credit': 'TransactionController.testCreditTransaction',
   'get /getAllTransactions' : 'TransactionController.getAllTransactions',
   'get /getTransactionsCount' : 'TransactionController.getTransactionsCount',
 
-  'get /test': 'TestController.getTest',
-  'post /test': 'TestController.postTest',
-  'get /err': 'TestController.errTest',
-
   'post /generate-scratch-card': 'ScratchCardController.generateScratchCard',
   'post /use-scratchcard': 'ScratchCardController.useScratchCard',
   'post /activate-scratch-card-group': 'ScratchCardController.activateScratchCardGroup',
+
   '/transaction': { policy: 'isAuthenticated' },
   '/ScratchCard': { policy: 'isAuthenticated' },
   '/Bank': { policy: 'isAuthenticated' },
-
 
   'get /transactionFees' : 'TransactionFeeController.getTransactionFees',
   'put /updateTransactionFee/:transactionType' : 'TransactionFeeController.updateTransactionFee',
@@ -78,10 +76,10 @@ module.exports.routes = {
   'post /createCreditRequest' : 'CreditRequestController.createCreditRequest',
   'get /getUserCreditRequest' : 'CreditRequestController.getUserCreditRequest',
 
-  'post /sendVerificationMessage' : 'TwillioController.sendVerificationMessage',
-  'post /verifyMessage' : 'TwillioController.verifyMessage',
-
-  'post /transactionInfo' : 'TransactionController.transactionInfo',
+  'post /send-verification-message' : 'DeviceController.sendVerificationMessage',
+  'post /verify-device' : 'DeviceController.verifyDevice',
+  'delete /device/:deviceId': 'DeviceController.removeVerifiedDevice',
+  'post /update-device-push-token': 'DeviceController.updateDevicePushToken'
 
   /* ***
   ***********************************************************************

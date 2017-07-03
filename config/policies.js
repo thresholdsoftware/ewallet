@@ -27,21 +27,27 @@ var policies = {
   },
   'UserController': {
     'signup': true,
-    'getUser': ['isAuthenticated'],
-    'updateUserProfile': ['isAuthenticated'],
+    'getUser': ['isAuthenticated','isDeviceVerified'],
+    'updateUserProfile': ['isAuthenticated','isDeviceVerified'],
     'passwordReset': ['isAuthenticated'],
-    'deactivateAccount': ['isAuthenticated'],
-    'updateBankDetails': ['isAuthenticated']
+    'deactivateAccount': ['isAuthenticated','isDeviceVerified'],
+    'updateBankDetails': ['isAuthenticated','isDeviceVerified']
   },
-
   'BalanceController': {
-    'getBalance': ['isAuthenticated']
+    'getBalance': ['isAuthenticated','isDeviceVerified']
   },
   'ScratchCardController': {
-    'useScratchCard': ['isAuthenticated']
+    'useScratchCard': ['isAuthenticated','isDeviceVerified']
   },
   'TransactionController' : {
-    '*' : ['isAuthenticated']
+    '*' : ['isAuthenticated','isDeviceVerified'],
+    'testCreditTransaction':['isAuthenticated']
+  },
+  'DeviceController':{
+    'removeVerifiedDevice': ['isAuthenticated','isDeviceVerified'],
+    'verifyDevice': ['isAuthenticated'],
+    'sendVerificationMessage': [],
+    'updateDevicePushToken':['isAuthenticated','isDeviceVerified']
   }
   /***************************************************************************
   *                                                                          *

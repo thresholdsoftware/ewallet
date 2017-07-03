@@ -52,6 +52,10 @@ module.exports = {
       collection: 'Transaction',
       via: 'toAccount'
     },
+    devices: {
+      collection: 'Device',
+      via: 'account'
+    },
     toJSON: function toJSON () {
       var obj = this.toObject(); //eslint-disable-line
       return removePassword(obj);

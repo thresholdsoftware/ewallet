@@ -84,10 +84,13 @@ const cleanupProcedures = () => Promise.all([
   pQuery('DROP TRIGGER IF EXISTS UpdateBalanceTrigger')
 ]);
 
+const cleanActiveSessions = () => pQuery('TRUNCATE sessions');
+
 module.exports = {
   generateTrigger,
   generateTransactionFeeEnteries,
   generateBankAccount,
   generateCalculateBalanceSP,
-  cleanupProcedures
+  cleanupProcedures,
+  cleanActiveSessions
 };

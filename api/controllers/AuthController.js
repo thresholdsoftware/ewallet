@@ -6,18 +6,22 @@
  */
 
 import passport from 'passport';
+import {checkIfVerifiedDevice} from '../utils/transformer.util';
 
 module.exports = {
   login: (req, res) => {
+    const {deviceId} = req.body;
     passport.authenticate('local', (err, user, info) => {
       if ((err) || (!user)) {
-        return res.status(401).json({message: info.message, user});
+        return res.status(400).json({message: info.message, user});
       }
       return req.logIn(user, (error) => {
         if (error) {
-          res.status(401).json(error);
+          res.status(400).json(error);
         }
-        return res.status(200).json({message: info.message, user});
+        return checkIfVerifiedDevice(user, deviceId).
+        then(() => res.status(200).json({message: info.message, user})).
+        catch((err) => res.status(403).json(err));
       });
     })(req, res);
   },

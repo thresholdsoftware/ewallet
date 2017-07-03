@@ -14,16 +14,22 @@ module.exports.bootstrap = function(cb) {
   dbHelper.cleanupProcedures()
   .then(()=>dbHelper.generateCalculateBalanceSP())
   .then(()=>dbHelper.generateTrigger())
-  .then(()=>console.log('Setting up Trigger'))
+  .then(()=>console.log('Setup Trigger'))
   .catch((err)=>sails.log.error(err));
 
   dbHelper.generateTransactionFeeEnteries()
-  .then(()=>console.log('Setup transaction fees'))
+  .then(()=>console.log('Setup Transaction Fees'))
   .catch((err)=>sails.log.error(err));
 
   dbHelper.generateBankAccount()
-  .then(()=>console.log('Generating bank account'))
+  .then(()=>console.log('Generating Bank Account'))
   .catch((err)=>sails.log.error(err));
+
+  if(sails.config.models.migrate === 'drop'){
+    dbHelper.cleanActiveSessions()
+    .then(()=>console.log('Cleared Sessions'))
+    .catch(err=>sails.log.error(err))
+  }
   // It's very important to trigger this callback method when you are finished
   // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)
   cb();
