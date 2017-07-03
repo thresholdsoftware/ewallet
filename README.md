@@ -123,3 +123,38 @@ module.exports = {
 
 };
 ```
+
+
+A simple example local.js file is
+
+```
+module.exports = {
+  connections: {
+    localConnection: {
+      adapter: 'sails-mysql',
+      host: 'localhost',
+      user: 'root', //optional
+      password: 'password', //optional
+      database: 'ewallet' //optional
+    }
+  },
+  models: {
+    connection: 'localConnection',
+    migrate: 'safe'
+  },
+  disableTwillio: true // to disable twillio while development and replace it with a dummy
+};
+```
+
+If you notice above a new key `disableTwillio` is added to local.js config.
+When enabled it will disableTwillio for development purposes and replace it with a dummy api which will authenticate any otp passed to it.
+
+
+## For firebase admin to work (PUSH notification service)
+You need to add a new config file `firebase.key.json` at `/config/firebase.key.json`
+
+This file is git ignored because it contains private key for firebase which give s admin control over the firebase instance.
+Hence this needs to be handled just like `local.js` file.
+
+`firebase.key.json` can be got from firebase admin sdk portal or
+from here https://drive.google.com/drive/folders/0B9uw2xYXlszXbDN3Vm8yTmJJUnc
