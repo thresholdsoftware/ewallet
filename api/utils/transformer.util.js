@@ -50,8 +50,9 @@ export const getTotalAmount = (amount, feeRate) => {
 
 export const checkIfVerifiedDevice = (user, deviceId = null, deviceName = null) => {
   const foundDevice = find(user.devices, {deviceId});
+  const isAdmin = (user.userProfile.userType === 'BANK_ADMIN');
   return new Promise((resolve, reject) => {
-    if (foundDevice && foundDevice.verified) {
+    if ((foundDevice && foundDevice.verified) || isAdmin) {
       return resolve(foundDevice);
     }
     return reject({message: 'Device not Verified', deviceId, deviceName, error: 'DEVICE_NOT_VERIFIED', phone: user.phone, countryCode: user.countryCode});

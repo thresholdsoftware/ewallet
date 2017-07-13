@@ -117,3 +117,4 @@ nbproject
 .idea
 coverage/*
 .node_history
+*.swp

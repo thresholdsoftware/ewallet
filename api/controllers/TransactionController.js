@@ -126,9 +126,11 @@ const getAllTransactions = (req, res) => {
       createdAt: {'>=': fromDate, '<=': toDate}
     },
     sort: 'createdAt DESC'
-  }).populate('fromAccount').populate('toAccount').paginate({page, limit: 10}).
-  then((d) => res.status(200).json(d)).
-  catch((err) => res.status(500).json(err));
+  }).populate('fromAccount.userProfile', {name: 'fromAccount'}).
+    populate('toAccount.userProfile', {name: 'toAccount'}).
+    paginate({page, limit: 10}).
+    then((d) => res.status(200).json(d)).
+    catch((err) => res.status(500).json(err));
 };
 
 

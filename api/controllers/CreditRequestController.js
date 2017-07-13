@@ -1,7 +1,7 @@
 /* global CreditRequest ,sails */
 import _ from 'lodash';
 
-const getCreditRequests = (req, res) => CreditRequest.find().populateAll().then((u) => {
+const getCreditRequests = (req, res) => CreditRequest.find().populate('userProfile.account').then((u) => {
   if (!u) {
     return res.status(404).json({message: 'record not found'});
   }
