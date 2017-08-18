@@ -1,0 +1,27 @@
+* {
+  margin: 0;
+}
+.fullPage {
+  height: 100%;
+}
+.pageWrap {
+  min-height:100%;
+  margin-bottom: -50px; 
+}
+.pageWrap:after {
+  content: "";
+  display: block;
+}
+.siteFooter, .pageWrap:after {
+  height: 50px; 
+}
+.siteFooter {
+}
+
+.siteBackground {
+  background-color: #31d890;
+}
+
+.uk-notification-message {
+  box-shadow: 0px 0px 5px #888888;
+}
