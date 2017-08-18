@@ -1045,6 +1045,10 @@ bluebird@3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.2.1.tgz#3cecf3504904c30ce3e79c170877e893a11910fd"
 
+bluebird@3.4.6:
+  version "3.4.6"
+  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.4.6.tgz#01da8d821d87813d158967e743d5fe6c62cf8c0f"
+
 bluebird@^3.1.1, bluebird@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.0.tgz#791420d7f551eea2897453a8a77653f96606d67c"
@@ -3424,9 +3428,13 @@ lodash@3.10.0:
   version "3.10.0"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.0.tgz#93d51c672828a4416a12af57220ba8a8737e2fbb"
 
-lodash@3.10.1, lodash@^3.10.1, lodash@^3.8.0, lodash@~3.10.1:
+lodash@3.10.1, lodash@^3.10.1, lodash@^3.8.0, lodash@~3.10.0, lodash@~3.10.1:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
+
+lodash@4.17.2:
+  version "4.17.2"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.2.tgz#34a3055babe04ce42467b607d700072c7ff6bf42"
 
 lodash@>=2.4.x, lodash@^4.0.0, lodash@^4.0.1, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.16.6, lodash@^4.2.0, lodash@^4.3.0, lodash@^4.8.0, lodash@^4.8.2:
   version "4.17.4"
@@ -3935,6 +3943,54 @@ object.omit@^2.0.0:
   dependencies:
     for-own "^0.1.4"
     is-extendable "^0.1.1"
+
+offshore-criteria@0.0.2, offshore-criteria@~0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/offshore-criteria/-/offshore-criteria-0.0.2.tgz#a80fe428cf26013717d6f91ef34b97b0d0d1a87d"
+  dependencies:
+    lodash "~2.4.1"
+
+offshore-errors@~0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/offshore-errors/-/offshore-errors-0.0.1.tgz#73920ae22f3aede33936388177a74d5c7430c32e"
+
+offshore-memory@0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/offshore-memory/-/offshore-memory-0.0.6.tgz#9cf071670b3cb9141f61b24463049a7fdbc7174f"
+  dependencies:
+    async "1.5.2"
+    lodash "4.17.2"
+    offshore-criteria "~0.0.2"
+    offshore-errors "~0.0.1"
+    waterline-cursor "0.0.6"
+
+offshore-schema@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/offshore-schema/-/offshore-schema-0.0.3.tgz#be9e36dbd3a960d8396dad9052ed7127f09ee6e5"
+  dependencies:
+    lodash "~3.10.0"
+
+offshore-validator@~0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/offshore-validator/-/offshore-validator-0.0.2.tgz#a3082afd5b983e2c15ada1ff08deacd3be14d70a"
+  dependencies:
+    geojsonhint "^1.1.0"
+    lodash "~3.10.1"
+    validator "~4.4.0"
+
+offshore@0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/offshore/-/offshore-0.0.6.tgz#ee7707848bdd45f4e5a9d746755c0962a6fe7f22"
+  dependencies:
+    async "1.5.2"
+    bluebird "3.2.1"
+    deep-diff "0.3.3"
+    lodash "3.10.1"
+    offshore-criteria "0.0.2"
+    offshore-schema "0.0.3"
+    offshore-validator "~0.0.2"
+    prompt "0.2.14"
+    switchback "2.0.0"
 
 on-finished@~2.3.0:
   version "2.3.0"
@@ -4561,6 +4617,12 @@ rttc@^1.0.2:
   dependencies:
     lodash "~2.4.1"
 
+rttc@^10.0.0-0:
+  version "10.0.0-1"
+  resolved "https://registry.yarnpkg.com/rttc/-/rttc-10.0.0-1.tgz#9e6effc2599c40a128ea580a01bd01830013c56f"
+  dependencies:
+    "@sailshq/lodash" "^3.10.2"
+
 run-async@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/run-async/-/run-async-0.1.0.tgz#c8ad4a5e110661e402a7d21b530e009f25f8e389"
@@ -4721,6 +4783,19 @@ sails-hook-babel@^6.0.1:
     babel-preset-es2015 "^6.18.0"
     babel-register "^6.18.0"
     source-map-support "^0.4.6"
+
+sails-hook-orm-offshore@0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/sails-hook-orm-offshore/-/sails-hook-orm-offshore-0.0.5.tgz#a3136968d6362a45b424c02024fcf498f2d3038c"
+  dependencies:
+    async "2.0.1"
+    bluebird "3.4.6"
+    flaverr "^1.0.0"
+    lodash "3.10.1"
+    offshore "0.0.6"
+    offshore-memory "0.0.6"
+    prompt "0.2.14"
+    rttc "^10.0.0-0"
 
 sails-hook-orm@~1.0.9:
   version "1.0.9"
@@ -5551,7 +5626,7 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "~1.0.0"
     spdx-expression-parse "~1.0.0"
 
-validator@4.4.0:
+validator@4.4.0, validator@~4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/validator/-/validator-4.4.0.tgz#35e29555dd5f7826f970a4eaecff9e6df6df3da6"
 
