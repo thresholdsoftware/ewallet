@@ -5,12 +5,14 @@ module.exports = {
     fromAccount: {
       columnName: 'from_account',
       model: 'Account',
-      required: true
+      required: true,
+      index:true
     },
     toAccount: {
       columnName: 'to_account',
       model: 'Account',
-      required: true
+      required: true,
+      index: true
     },
     transactionType: {
       columnName: 'transaction_type',
@@ -36,6 +38,11 @@ module.exports = {
     note: {
       columnName: 'note',
       type: 'string'
+    },
+    everyPay:{
+      columnName: 'everypay',
+      model : 'EveryPay',
+      index : true
     }
   }
 };
