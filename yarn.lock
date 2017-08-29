@@ -2922,6 +2922,10 @@ ipaddr.js@1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-1.0.5.tgz#5fa78cf301b825c78abc3042d812723049ea23c7"
 
+ipware@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/ipware/-/ipware-1.0.0.tgz#e3f5320963d0ae872eaf478d63ecb36f04c04c99"
+
 is-arrayish@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/is-arrayish/-/is-arrayish-0.2.1.tgz#77c99840527aa8ecb1a8ba697b80645a7a926a9d"
