@@ -50,6 +50,7 @@ module.exports.routes = {
   'post /send-password-reset-message':'UserController.sendPasswordResetVerificationMessage',
   'post /password-reset': 'UserController.passwordReset',
   'post /deactivate': 'UserController.deactivateAccount',
+  'post /callback' : 'CallbackController.acknowledgePayment',
 
   'get /balance': 'BalanceController.getBalance',
 

@@ -50,16 +50,30 @@ const generateTransactionFeeEnteries = () => {
     _createTransactionFee('BANK_TO_WALLET', defaultFees),
     _createTransactionFee('WALLET_TO_WALLET', defaultFees),
     _createTransactionFee('DISTRIBUTOR_TO_WALLET', defaultFees),
-    _createTransactionFee('WALLET_TO_DISTRIBUTOR', defaultFees)
+    _createTransactionFee('WALLET_TO_DISTRIBUTOR', defaultFees),
+    _createTransactionFee('CARD_TO_WALLET', defaultFees)
   ]);
 };
 
 const generateBankAccount = () => {
-  const phone = 10000, countryCode = '+232', password = 'qwerty', name = 'bank manager', email = 'yolo@yolo.com';
+  const phone = 10000, countryCode = '+239', password = 'qwerty', name = 'bank manager', email = 'yolo@yolo.com';
   return Account.findOne({phone}).populate('balanceAccount').then((adminacc) => {
     if (!adminacc) {
       return Account.create({phone, password, countryCode}).
         then((acc) => UserProfile.create({name, email, account: acc.id, userType: 'BANK_ADMIN'})).
+        then((uprofile) => Balance.create({account: uprofile.account, balance: 30000})).
+        then((balance) => Account.findOne({id: balance.account}).populateAll());
+    }
+    return adminacc;
+  });
+};
+
+const generateCardAdmin = () => {
+  const phone = 1001, countryCode = '+239', password = 'qwerty', name = 'card manager', email = 'yolo@yolo.com';
+  return Account.findOne({phone}).populate('balanceAccount').then((adminacc) => {
+    if (!adminacc) {
+      return Account.create({phone, password, countryCode}).
+        then((acc) => UserProfile.create({name, email, account: acc.id, userType: 'PAYMENT_ADMIN'})).
         then((uprofile) => Balance.create({account: uprofile.account, balance: 30000})).
         then((balance) => Account.findOne({id: balance.account}).populateAll());
     }
@@ -92,5 +106,6 @@ module.exports = {
   generateBankAccount,
   generateCalculateBalanceSP,
   cleanupProcedures,
-  cleanActiveSessions
+  cleanActiveSessions,
+  generateCardAdmin
 };

@@ -25,6 +25,10 @@ module.exports.bootstrap = function(cb) {
   .then(()=>console.log('Generating Bank Account'))
   .catch((err)=>sails.log.error(err));
 
+  dbHelper.generateCardAdmin()
+  .then(()=>console.log('Generating Payment Account'))
+  .catch((err)=>sails.log.error(err));
+
   if(sails.config.models.migrate === 'drop'){
     dbHelper.cleanActiveSessions()
     .then(()=>console.log('Cleared Sessions'))

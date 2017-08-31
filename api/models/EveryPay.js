@@ -42,6 +42,10 @@ module.exports = {
     userIp: {
       type: 'string',
       required: true
+    },
+    transaction: {
+      collection: 'Transaction',
+      via: 'everyPay'
     }
   }
 };
