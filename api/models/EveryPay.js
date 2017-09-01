@@ -2,44 +2,49 @@ module.exports = {
   attributes: {
     creditStatus: {
       type: 'string',
+      columnName: 'credit_status',
       enum: [
         'SUCCESS', 'PENDING'
       ],
+      defaultsTo: 'PENDING',
       required: true
     },
-    transactionId: {
-      type: 'integer',
-      unique: true
+    paymentId: {
+      columnName: 'payment_id',
+      type: 'string'
     },
     nonce: {
+      columnName: 'nonce',
       type: 'string',
-      unique: true
+      required: true
     },
-    accountId: {
+    apiAccountId: {
+      columnName: 'api_account_id',
       type: 'string',
       required: true
     },
     apiUserName: {
+      columnName: 'api_username',
       type: 'string',
       required: true
     },
     amount: {
+      columnName: 'amount',
       type: 'string',
       required: true
     },
     skinName: {
-      type: 'string',
-      required: true
-    },
-    timestamp: {
+      columnName: 'skin_name',
       type: 'string',
       required: true
     },
     transactionType: {
+      columnName: 'transaction_type',
       type: 'string',
       required: true
     },
     userIp: {
+      columnName: 'user_ip',
       type: 'string',
       required: true
     },
@@ -47,5 +52,13 @@ module.exports = {
       collection: 'Transaction',
       via: 'everyPay'
     }
+  },
+  beforeCreate: (v, cb) => {
+    console.log(v, 'before');
+    cb();
+  },
+  afterCreate: (v, cb) => {
+    console.log('after', v);
+    cb();
   }
 };

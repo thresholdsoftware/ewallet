@@ -3,7 +3,7 @@ var transactionTypes = [
   'WALLET_TO_WALLET',
   'DISTRIBUTOR_TO_WALLET',
   'WALLET_TO_DISTRIBUTOR',
-  'CARD_TO_WALLET'
+  'PAYMENTADMIN_TO_WALLET'
 ];
 
 module.exports = {

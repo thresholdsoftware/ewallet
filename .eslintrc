@@ -54,6 +54,7 @@
     "ScratchCard": true,
     "Bank": true,
     "Device": true,
+    "EveryPay":true,
     "sails": true
   }
 }

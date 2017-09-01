@@ -50,7 +50,6 @@ module.exports.routes = {
   'post /send-password-reset-message':'UserController.sendPasswordResetVerificationMessage',
   'post /password-reset': 'UserController.passwordReset',
   'post /deactivate': 'UserController.deactivateAccount',
-  'post /callback' : 'CallbackController.acknowledgePayment',
 
   'get /balance': 'BalanceController.getBalance',
 
@@ -82,7 +81,9 @@ module.exports.routes = {
   'delete /device/:deviceId': 'DeviceController.removeVerifiedDevice',
   'post /update-device-push-token': 'DeviceController.updateDevicePushToken',
 
-  'post /every-pay-payment-page': 'EveryPayController.generatePaymentPage'
+  'post /every-pay-payment-page': 'EveryPayController.generatePaymentPage',
+  'post /every-pay-acknowledge' : 'EveryPayController.acknowledgePayment'
+
   /* ***
   ***********************************************************************
   *                                                                          *

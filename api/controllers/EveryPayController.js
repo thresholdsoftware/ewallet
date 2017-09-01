@@ -1,9 +1,9 @@
 /* globals sails*/
 import crypto from 'crypto';
 import map from 'lodash/map';
-import ipware from 'ipware';
+import result from 'lodash/result';
+import {getTotalAmount} from '../utils/transformer.util';
 
-const getIpOfUser = ipware().get_ip;
 
 const _addHmacFieldsToJSON = (inputJson) => {
   const value = Object.keys(inputJson).concat('hmac_fields').sort().join(',');
@@ -16,48 +16,100 @@ const _calculateHmac = (signingKey, inputJson) => {
   return crypto.createHmac('sha1', signingKey).update(hmacText).digest('hex');
 };
 
-const getFields = (amount = '20.0', orderReference = '1123', userIp = '171.48.18.104') => {
+const _getFields = (everypayOrder) => {
+  const {id, nonce, apiAccountId, apiUserName,
+    amount, skinName, transactionType, userIp, createdAt} = everypayOrder;
+  const orderTime = new Date(createdAt);
   const hmacFieldAddedJson = _addHmacFieldsToJSON({
-    'account_id': 'EUR3D1',
+    'account_id': apiAccountId,
     'amount': amount,
-    'api_username': 'ae7b6dc361da034d',
+    'api_username': apiUserName,
     'callback_url': 'http://www.google.ee/?q=callback',
     'customer_url': 'http://www.google.ee/?q=redirect',
-    'nonce': '30d7810d31dbb77d4300fd3f6a59ff11',
-    'order_reference': orderReference,
-    'skin_name': 'default',
-    'timestamp': Date.now(),
-    'transaction_type': 'charge',
+    'nonce': nonce,
+    'order_reference': id,
+    'skin_name': skinName,
+    'timestamp': orderTime.getTime(),
+    'transaction_type': transactionType,
     'user_ip': userIp,
   });
   return hmacFieldAddedJson;
 };
 
+const _createNewEveryPayOrder = (apiUserName, apiAccountId, nonce, amount, transactionType, userIp) => {
+  const newOrder = {
+    nonce,
+    apiAccountId,
+    apiUserName,
+    amount,
+    skinName: 'default',
+    transactionType,
+    userIp
+  };
+  return EveryPay.create(newOrder);
+};
+
 const generatePaymentPage = (req, res) => {
   const signingKey = '7b001618f845683a735aa2171e71deb4';
   const everyPayUrl = 'https://igw-demo.every-pay.com/transactions';
-  const {clientIp} = getIpOfUser(req);
+  const clientIp = req.userIpAddress;
   const {amount} = req.body;
-  const orderReference = '12010';
-  const fields = getFields(amount, orderReference, clientIp);
-  const hmac = _calculateHmac(signingKey, fields);
-  const html = `
-  <iframe id="iframe-payment-container" name="iframe-payment-container" , width="400" , height="400"></iframe>
-  <form action="${everyPayUrl}" id="iframe_form" method="post" style="display: none" target="iframe-payment-container">
-    <input name="hmac" value="${hmac}" />
-    ${
-      map(fields, (value, key) => `<input name="${key}" value="${value}" />`).join('\n')
-     }
-  </form>
-  <script>
-    window.onload = function() {
-      document.getElementById("iframe_form").submit();
-    }
-  </script>
-  `;
-  res.status(200).send(html);
+  const apiAccountId = 'EUR3D1';
+  const apiUserName = 'ae7b6dc361da034d';
+  const transactionType = 'charge';
+  const nonce = '30d7810d31dbb77d4300fd3f6a59ff11';
+
+  return _createNewEveryPayOrder(apiUserName, apiAccountId, nonce, amount, transactionType, clientIp).
+  then((everypayOrder) => {
+    const fields = _getFields(everypayOrder);
+    const hmac = _calculateHmac(signingKey, fields);
+    const html = `
+    <iframe id="iframe-payment-container" name="iframe-payment-container" , width="400" , height="400"></iframe>
+    <form action="${everyPayUrl}" id="iframe_form" method="post" style="display: none" target="iframe-payment-container">
+      <input name="hmac" value="${hmac}" />
+      ${
+        map(fields, (value, key) => `<input name="${key}" value="${value}" />`).join('\n')
+       }
+    </form>
+    <script>
+      window.onload = function() {
+        document.getElementById("iframe_form").submit();
+      }
+    </script>
+    `;
+    return res.status(200).send(html);
+  }).catch((err) => res.status(500).json(err));
+};
+
+
+const acknowledgePayment = (req, res) => {
+  const orderRef = result(req, 'body.order_reference');
+  const toAccount = result(req, 'body.userId');
+  const amountInEuros = result(req, 'body.amount');
+  const paymentAdmin = req.paymentAdminUser;
+  const amount = amountInEuros * 24500;
+  const fee = 0;
+
+  return Transaction.create({
+    everyPay: orderRef,
+    fromAccount: paymentAdmin.account,
+    toAccount,
+    transactionType: 'PAYMENTADMIN_TO_WALLET',
+    note: '',
+    amount,
+    fee,
+    totalAmount: getTotalAmount(amount, fee)
+  }).then((transaction) => {
+    res.status(200).json(transaction);
+  }).catch((err) => {
+    // Check if transaction already exists
+    // If existss - reply 200
+    console.log(err);
+    res.status(500).json(err);
+  });
 };
 
 module.exports = {
-  generatePaymentPage
+  generatePaymentPage,
+  acknowledgePayment
 };

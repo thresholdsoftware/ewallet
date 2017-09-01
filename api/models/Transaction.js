@@ -42,7 +42,8 @@ module.exports = {
     everyPay: {
       columnName: 'everypay',
       model: 'EveryPay',
-      index: true
+      index: true,
+      unique: true
     }
   }
 };
