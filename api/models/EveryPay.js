@@ -51,6 +51,11 @@ module.exports = {
     transaction: {
       collection: 'Transaction',
       via: 'everyPay'
+    },
+    userId: {
+      model: 'Account',
+      required: true,
+      columnName: 'user_id'
     }
   },
   beforeCreate: (v, cb) => {

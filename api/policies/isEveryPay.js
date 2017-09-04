@@ -4,10 +4,10 @@ module.exports = function(req, res, next) {
   const getIpOfUser = ipware().get_ip;
   const {clientIp} = getIpOfUser(req);
   req.userIpAddress = clientIp;
-  const everyPayIps = [];
+  const everyPayIps = [];//['54.229.117.155'];
   const areYouAllowed = everyPayIps.includes(req.userIpAddress);
 
-  if (areYouAllowed) {
+  if (!areYouAllowed) {
     return UserProfile.findOne({userType: 'PAYMENT_ADMIN'})
     .then((paymentAdmin)=>{
       req.paymentAdminUser = paymentAdmin;

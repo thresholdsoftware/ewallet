@@ -83,7 +83,6 @@ module.exports.routes = {
 
   'post /every-pay-payment-page': 'EveryPayController.generatePaymentPage',
   'post /every-pay-acknowledge' : 'EveryPayController.acknowledgePayment'
-
   /* ***
   ***********************************************************************
   *                                                                          *

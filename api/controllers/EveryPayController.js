@@ -4,6 +4,8 @@ import map from 'lodash/map';
 import result from 'lodash/result';
 import {getTotalAmount} from '../utils/transformer.util';
 
+const redirectUrl = 'http://www.atulr.com/test.html';
+const callbackUrl = 'http://005141d2.ngrok.io/every-pay-acknowledge';
 
 const _addHmacFieldsToJSON = (inputJson) => {
   const value = Object.keys(inputJson).concat('hmac_fields').sort().join(',');
@@ -18,16 +20,16 @@ const _calculateHmac = (signingKey, inputJson) => {
 
 const _getFields = (everypayOrder) => {
   const {id, nonce, apiAccountId, apiUserName,
-    amount, skinName, transactionType, userIp, createdAt} = everypayOrder;
+    amount, skinName, transactionType, userIp, createdAt, userId} = everypayOrder;
   const orderTime = new Date(createdAt);
   const hmacFieldAddedJson = _addHmacFieldsToJSON({
     'account_id': apiAccountId,
     'amount': amount,
     'api_username': apiUserName,
-    'callback_url': 'http://www.google.ee/?q=callback',
-    'customer_url': 'http://www.google.ee/?q=redirect',
+    'callback_url': callbackUrl,
+    'customer_url': redirectUrl,
     'nonce': nonce,
-    'order_reference': id,
+    'order_reference': `${id}_${userId}`,
     'skin_name': skinName,
     'timestamp': orderTime.getTime(),
     'transaction_type': transactionType,
@@ -36,7 +38,7 @@ const _getFields = (everypayOrder) => {
   return hmacFieldAddedJson;
 };
 
-const _createNewEveryPayOrder = (apiUserName, apiAccountId, nonce, amount, transactionType, userIp) => {
+const _createNewEveryPayOrder = (apiUserName, apiAccountId, nonce, amount, transactionType, userIp, userId) => {
   const newOrder = {
     nonce,
     apiAccountId,
@@ -44,7 +46,8 @@ const _createNewEveryPayOrder = (apiUserName, apiAccountId, nonce, amount, trans
     amount,
     skinName: 'default',
     transactionType,
-    userIp
+    userIp,
+    userId
   };
   return EveryPay.create(newOrder);
 };
@@ -58,8 +61,9 @@ const generatePaymentPage = (req, res) => {
   const apiUserName = 'ae7b6dc361da034d';
   const transactionType = 'charge';
   const nonce = '30d7810d31dbb77d4300fd3f6a59ff11';
+  const userId = result(req, 'user.id', -1);
 
-  return _createNewEveryPayOrder(apiUserName, apiAccountId, nonce, amount, transactionType, clientIp).
+  return _createNewEveryPayOrder(apiUserName, apiAccountId, nonce, amount, transactionType, clientIp, userId).
   then((everypayOrder) => {
     const fields = _getFields(everypayOrder);
     const hmac = _calculateHmac(signingKey, fields);
@@ -77,21 +81,25 @@ const generatePaymentPage = (req, res) => {
       }
     </script>
     `;
-    return res.status(200).send(html);
+    return res.status(200).json({
+      orderRef: everypayOrder.id,
+      html,
+      redirectUrl
+    });
   }).catch((err) => res.status(500).json(err));
 };
 
-
 const acknowledgePayment = (req, res) => {
   const orderRef = result(req, 'body.order_reference');
-  const toAccount = result(req, 'body.userId');
+  const meta = orderRef.split('_');
+  const everyPayId = meta[0];
+  const toAccount = meta[1];
   const amountInEuros = result(req, 'body.amount');
   const paymentAdmin = req.paymentAdminUser;
   const amount = amountInEuros * 24500;
   const fee = 0;
-
   return Transaction.create({
-    everyPay: orderRef,
+    everyPay: everyPayId,
     fromAccount: paymentAdmin.account,
     toAccount,
     transactionType: 'PAYMENTADMIN_TO_WALLET',
@@ -104,8 +112,14 @@ const acknowledgePayment = (req, res) => {
   }).catch((err) => {
     // Check if transaction already exists
     // If existss - reply 200
-    console.log(err);
-    res.status(500).json(err);
+    Transaction.findOne({everyPay: orderRef}).
+    then((foundTransaction) => {
+      if (!foundTransaction) {
+        throw err;
+      }
+      return res.status(200).json('Already paid');
+    }).
+    catch((err) => res.status(500).json(err));
   });
 };
 
