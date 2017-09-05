@@ -23,7 +23,7 @@ module.exports = {
     },
     userType: {
       columnName: 'user_type',
-      enum: ['REGULAR', 'DISTRIBUTOR', 'BANK_ADMIN','PAYMENT_ADMIN'],
+      enum: ['REGULAR', 'DISTRIBUTOR', 'BANK_ADMIN', 'PAYMENT_ADMIN'],
       type: 'string',
       defaultsTo: 'REGULAR'
     }

@@ -51,7 +51,7 @@ const generateTransactionFeeEnteries = () => {
     _createTransactionFee('WALLET_TO_WALLET', defaultFees),
     _createTransactionFee('DISTRIBUTOR_TO_WALLET', defaultFees),
     _createTransactionFee('WALLET_TO_DISTRIBUTOR', defaultFees),
-    _createTransactionFee('CARD_TO_WALLET', defaultFees)
+    _createTransactionFee('PAYMENTADMIN_TO_WALLET', defaultFees)
   ]);
 };
 

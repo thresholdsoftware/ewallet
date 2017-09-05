@@ -1,42 +1,69 @@
-
-
 module.exports = {
   attributes: {
-    nonce: {
-    	type:  'string',
-    	unique:true
+    creditStatus: {
+      type: 'string',
+      columnName: 'credit_status',
+      enum: [
+        'SUCCESS', 'PENDING'
+      ],
+      defaultsTo: 'PENDING',
+      required: true
     },
-    accountId: {
-    	type: 'string',
-    	required: true
+    paymentId: {
+      columnName: 'payment_id',
+      type: 'string'
+    },
+    nonce: {
+      columnName: 'nonce',
+      type: 'string',
+      required: true
+    },
+    apiAccountId: {
+      columnName: 'api_account_id',
+      type: 'string',
+      required: true
     },
     apiUserName: {
-    	type: 'string',
-    	required: true
+      columnName: 'api_username',
+      type: 'string',
+      required: true
     },
     amount: {
-    	type: 'string',
-    	required:true
+      columnName: 'amount',
+      type: 'string',
+      required: true
     },
     skinName: {
-    	type: 'string',
-    	required:true
-    },
-    timestamp: {
-    	type: 'string',
-    	required:true
+      columnName: 'skin_name',
+      type: 'string',
+      required: true
     },
     transactionType: {
-    	type: 'string',
-    	required: true
+      columnName: 'transaction_type',
+      type: 'string',
+      required: true
     },
     userIp: {
-    	type: 'string',
-    	required: true
+      columnName: 'user_ip',
+      type: 'string',
+      required: true
     },
     transaction: {
-    	collection: 'Transaction',
-    	via : 'everyPay'
+      collection: 'Transaction',
+      via: 'everyPay'
+    },
+    userId: {
+      model: 'Account',
+      required: true,
+      columnName: 'user_id'
     }
+  },
+  beforeCreate: (v, cb) => {
+    console.log(v, 'before');
+    cb();
+  },
+  afterCreate: (v, cb) => {
+    console.log('after', v);
+    cb();
   }
 };

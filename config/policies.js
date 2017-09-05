@@ -48,6 +48,10 @@ var policies = {
     'verifyDevice': ['isAuthenticated'],
     'sendVerificationMessage': [],
     'updateDevicePushToken':['isAuthenticated','isDeviceVerified']
+  },
+  'EveryPayController': {
+    'generatePaymentPage':['isAuthenticated'],
+    'acknowledgePayment': ['isEveryPay']
   }
   /***************************************************************************
   *                                                                          *

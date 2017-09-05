@@ -6,7 +6,7 @@ module.exports = {
       columnName: 'from_account',
       model: 'Account',
       required: true,
-      index:true
+      index: true
     },
     toAccount: {
       columnName: 'to_account',
@@ -39,10 +39,11 @@ module.exports = {
       columnName: 'note',
       type: 'string'
     },
-    everyPay:{
+    everyPay: {
       columnName: 'everypay',
-      model : 'EveryPay',
-      index : true
+      model: 'EveryPay',
+      index: true,
+      unique: true
     }
   }
 };
