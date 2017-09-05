@@ -5,7 +5,7 @@ import result from 'lodash/result';
 import {getTotalAmount} from '../utils/transformer.util';
 
 const redirectUrl = 'http://www.atulr.com/test.html';
-const callbackUrl = 'http://005141d2.ngrok.io/every-pay-acknowledge';
+const callbackUrl = 'https://wallet-stp.com/every-pay-acknowledge';
 
 const _addHmacFieldsToJSON = (inputJson) => {
   const value = Object.keys(inputJson).concat('hmac_fields').sort().join(',');
