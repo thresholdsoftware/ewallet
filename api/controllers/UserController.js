@@ -3,7 +3,7 @@ import SmsUtil from '../utils/sms.util';
 
 const signup = (req, res) => {
   const {phone, countryCode, password, name, email, code, deviceId, deviceName} = req.body;
-  const errors = checkRequiredKeys(req.body, ['phone', 'countryCode', 'password', 'name', 'email', 'code', 'deviceId', 'deviceName']);
+  const errors = checkRequiredKeys(req.body, ['phone', 'countryCode', 'password', 'name', 'code', 'deviceId', 'deviceName']);
   if (errors) {
     return res.status(400).json(errors);
   }
