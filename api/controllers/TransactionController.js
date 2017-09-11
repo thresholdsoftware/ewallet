@@ -10,6 +10,9 @@ const _generateTransactionInfo = (fromUserPhone, toUserPhone, transferAmount) =>
   if (!amount) {
     throw {message: 'Invalid amount'};
   }
+  if (fromPhone === toPhone) {
+    throw {message: 'You cannot transfer money to yourself'};
+  }
   return Account.findOne({phone: fromPhone}).populate('userProfile').populate('balanceAccount').then((fromAccount) => Account.findOne({phone: toPhone}).populate('userProfile').populate('balanceAccount').
   then((toAccount) => {
     if (!fromAccount || !toAccount) {
