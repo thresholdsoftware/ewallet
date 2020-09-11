@@ -1759,12 +1759,6 @@ ejs@2.3.4:
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.3.4.tgz#3c76caa09664b3583b0037af9dc136e79ec68b98"
 
-encoding@^0.1.11:
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/encoding/-/encoding-0.1.12.tgz#538b66f3ee62cd1ab51ec323829d1f9480c74beb"
-  dependencies:
-    iconv-lite "~0.4.13"
-
 end-of-stream@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/end-of-stream/-/end-of-stream-1.0.0.tgz#d4596e702734a93e40e9af864319eabd99ff2f0e"
@@ -3049,7 +3043,7 @@ is-resolvable@^1.0.0:
   dependencies:
     tryit "^1.0.1"
 
-is-stream@^1.0.0, is-stream@^1.0.1:
+is-stream@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/is-stream/-/is-stream-1.1.0.tgz#12d4a3dd4e68e0b79ceb8dbc84173ae80d91ca44"
 
@@ -3807,12 +3801,9 @@ nested-error-stacks@^1.0.0:
   dependencies:
     inherits "~2.0.1"
 
-node-fetch@^1.6.3:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-1.7.0.tgz#3ff6c56544f9b7fb00682338bb55ee6f54a8a0ef"
-  dependencies:
-    encoding "^0.1.11"
-    is-stream "^1.0.1"
+node-fetch@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
 
 node-forge@0.7.1:
   version "0.7.1"
